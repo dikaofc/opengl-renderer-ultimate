@@ -104,7 +104,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         uses: android-actions/setup-android@v3
         with:
-          packages: 'build-tools;35.0.0 platforms;android-35 platforms;android-34'
+          packages: 'build-tools;36.0.0 platforms;android-36 platforms;android-35 platforms;android-34'
 
       - name: Build Tile APK
         if: startsWith(github.ref, 'refs/tags/v')
@@ -139,8 +139,8 @@ jobs:
             --target-sdk-version 35 \
             build/compiled_res/*.flat
 
-          # Compile Java
-          find src -name "*.java" > build/sources.txt
+          # Compile Java (include gen/ for R.java)
+          find src build/gen -name "*.java" > build/sources.txt
           javac \
             -source 11 -target 11 \
             -classpath "$PLATFORM/android.jar" \

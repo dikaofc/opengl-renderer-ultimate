@@ -101,7 +101,8 @@ echo "=== Linking ==="
     "$BUILD_DIR/compiled_res"/*.flat
 
 echo "=== Compiling Java ==="
-find "$SRC_DIR" -name "*.java" > "$BUILD_DIR/sources.txt"
+# Include both src/ and gen/ (aapt2 generates R.java in gen/)
+find "$SRC_DIR" "$BUILD_DIR/gen" -name "*.java" > "$BUILD_DIR/sources.txt"
 javac \
     -source 11 -target 11 \
     -classpath "$PLATFORM/android.jar" \
