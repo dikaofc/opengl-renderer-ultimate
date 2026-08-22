@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.openglrenderer.tile"
+    android:versionCode="1"
+    android:versionName="1.0">
+
+    <uses-permission android:name="android.permission.QUICK_SETTINGS" />
+
+    <application
+        android:label="ORE Tile"
+        android:icon="@drawable/tile_icon"
+        android:allowBackup="false"
+        android:supportsRtl="true">
+
+        <service
+            android:name=".ServerTileService"
+            android:icon="@drawable/tile_icon"
+            android:label="WebUI Toggle"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.service.quicksettings.action.QS_TILE"
+                android:resource="@drawable/tile_icon" />
+        </service>
+
+    </application>
+</manifest>
