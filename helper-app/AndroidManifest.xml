@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.openglrenderer.tile"
     android:versionCode="1"
     android:versionName="1.0">
+
+    <!-- TileService requires API 24+ (Android 7.0) -->
+    <uses-sdk
+        android:minSdkVersion="24"
+        android:targetSdkVersion="35"
+        tools:overrideLibrary="androidx.core" />
 
     <uses-permission android:name="android.permission.QUICK_SETTINGS" />
 
@@ -10,14 +17,17 @@
         android:label="ORE Tile"
         android:icon="@drawable/tile_icon"
         android:allowBackup="false"
-        android:supportsRtl="true">
+        android:supportsRtl="true"
+        android:extractNativeLibs="false"
+        android:useEmbeddedDex="true">
 
         <service
             android:name=".ServerTileService"
             android:icon="@drawable/tile_icon"
             android:label="WebUI Toggle"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
-            android:exported="true">
+            android:exported="true"
+            android:foregroundServiceType="specialUse">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>

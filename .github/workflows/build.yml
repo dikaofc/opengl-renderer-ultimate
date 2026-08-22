@@ -104,7 +104,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         uses: android-actions/setup-android@v3
         with:
-          packages: 'build-tools;34.0.0 platforms;android-34'
+          packages: 'build-tools;35.0.0 platforms;android-35 platforms;android-34'
 
       - name: Build Tile APK
         if: startsWith(github.ref, 'refs/tags/v')
@@ -122,22 +122,28 @@ jobs:
 
           mkdir -p build/compiled_res build/classes build/gen
 
+          # Find latest platform (prefer android-35, fallback to any)
+          PLATFORM=$(ls -d $ANDROID_HOME/platforms/android-3* 2>/dev/null | sort -V | tail -1)
+          echo "Using platform: $PLATFORM"
+
           # Compile resources
           "$AAPT2" compile --dir res -o build/compiled_res/
 
-          # Link
+          # Link (min API 24, target API 35 — supports Android 7.0 to 16)
           "$AAPT2" link \
             -o build/unsigned.apk \
-            -I "$ANDROID_HOME/platforms/android-34/android.jar" \
+            -I "$PLATFORM/android.jar" \
             --manifest AndroidManifest.xml \
             --java build/gen \
+            --min-sdk-version 24 \
+            --target-sdk-version 35 \
             build/compiled_res/*.flat
 
           # Compile Java
           find src -name "*.java" > build/sources.txt
           javac \
             -source 11 -target 11 \
-            -classpath "$ANDROID_HOME/platforms/android-34/android.jar" \
+            -classpath "$PLATFORM/android.jar" \
             -d build/classes \
             @build/sources.txt
 
@@ -145,7 +151,8 @@ jobs:
           find build/classes -name "*.class" > build/classfiles.txt
           "$D8" \
             --output build/ \
-            --lib "$ANDROID_HOME/platforms/android-34/android.jar" \
+            --min-api 24 \
+            --lib "$PLATFORM/android.jar" \
             @build/classfiles.txt
 
           # Add DEX to APK
