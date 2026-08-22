@@ -1,0 +1,141 @@
+name: Bug Report
+description: Report a bug or issue with the module
+title: "[BUG] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug! Please fill out the details below so we can fix it faster.
+
+  - type: input
+    id: device
+    attributes:
+      label: Device
+      description: Brand and model (e.g. Samsung Galaxy S24 Ultra)
+      placeholder: "Samsung Galaxy S24 Ultra"
+    validations:
+      required: true
+
+  - type: input
+    id: android
+    attributes:
+      label: Android Version
+      description: Android version and SDK level
+      placeholder: "Android 15 (SDK 35)"
+    validations:
+      required: true
+
+  - type: input
+    id: root
+    attributes:
+      label: Root Method
+      description: Which root manager are you using?
+      options:
+        - KernelSU
+        - KernelSU Next
+        - Magisk
+        - APatch
+    validations:
+      required: true
+
+  - type: input
+    id: root-version
+    attributes:
+      label: Root Version
+      description: Version of your root manager
+      placeholder: "KernelSU v1.0.0"
+    validations:
+      required: true
+
+  - type: input
+    id: rom
+    attributes:
+      label: ROM
+      description: Stock or custom ROM? Which one?
+      placeholder: "LineageOS 21"
+    validations:
+      required: true
+
+  - type: input
+    id: module-version
+    attributes:
+      label: Module Version
+      description: Version of OpenGL Renderer Ultimate
+      placeholder: "v3.1.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: How severe is this issue?
+      options:
+        - Low (cosmetic, minor inconvenience)
+        - Medium (feature not working, workaround exists)
+        - High (module broken, requires reboot)
+        - Critical (bootloop, system crash)
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What happened? What did you expect to happen?
+      placeholder: |
+        1. I opened the WebUI
+        2. I clicked "Apply All"
+        3. The screen froze for 5 seconds
+        4. Expected: settings applied smoothly
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: How can we reproduce this issue?
+      placeholder: |
+        1. Install module via KernelSU
+        2. Reboot device
+        3. Open WebUI
+        4. Click [specific button]
+        5. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Paste relevant logcat output or module logs
+      render: shell
+      placeholder: |
+        # Get logs:
+        adb logcat -d | grep -i "opengl\|gpu\|hwui" > logs.txt
+        adb shell su -c "cat /data/local/opengl_renderer/logs/service_*.log"
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Any other info that might help
+      placeholder: Screenshots, other modules installed, etc.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I have searched existing issues
+          required: true
+        - label: I am using the latest version
+          required: true
+        - label: I have included logs
+          required: false

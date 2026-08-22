@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Documentation
+    url: https://github.com/dikaofc/opengl-renderer-ultimate#readme
+    about: Check the README for installation guide and FAQ
+  - name: Discussions
+    url: https://github.com/dikaofc/opengl-renderer-ultimate/discussions
+    about: Ask questions or discuss ideas
