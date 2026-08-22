@@ -12,9 +12,21 @@ const MODDIR = '/data/adb/modules/opengl_renderer_ultimate';
 function shell(cmd) {
     return new Promise((resolve) => {
         if (typeof ksu !== 'undefined' && ksu.exec) {
-            ksu.exec(cmd, (result) => resolve(result.stdout || ''));
+            ksu.exec(cmd, (result) => {
+                // KernelSU callback: result is a string (stdout) in most versions,
+                // but may be an object {stdout, stderr, code} in newer versions.
+                if (typeof result === 'string') {
+                    resolve(result);
+                } else if (result && typeof result.stdout === 'string') {
+                    resolve(result.stdout);
+                } else if (result !== undefined && result !== null) {
+                    resolve(String(result));
+                } else {
+                    resolve('');
+                }
+            });
         } else {
-            console.log('[Shell]', cmd);
+            console.warn('[Shell] ksu.exec not available — running outside KernelSU?');
             resolve('');
         }
     });
