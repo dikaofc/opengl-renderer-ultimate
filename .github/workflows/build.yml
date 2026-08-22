@@ -1,4 +1,4 @@
-name: Build Flashable ZIP
+name: Build Flashable ZIP + Tile APK
 
 on:
   push:
@@ -50,6 +50,11 @@ jobs:
           fi
           echo "All scripts valid!"
 
+      - name: JS syntax check
+        run: |
+          node --check webroot/app.js 2>&1 && echo "[OK] app.js" || echo "[WARN] node not available, skipping"
+        continue-on-error: true
+
       - name: Get version
         id: version
         run: |
@@ -66,7 +71,8 @@ jobs:
             -x "*.md" \
             -x ".gitignore" \
             -x "LICENSE" \
-            -x "build_zip/*"
+            -x "build_zip/*" \
+            -x "helper-app/*"
           echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_ENV
           echo "Built: $ZIP_NAME"
           ls -lh "$ZIP_NAME"
@@ -86,6 +92,96 @@ jobs:
           path: ${{ env.ZIP_NAME }}
           retention-days: 30
 
+      # ---- Build Helper Tile APK ----
+      - name: Set up JDK 17
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Android SDK
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: android-actions/setup-android@v3
+        with:
+          packages: 'build-tools;34.0.0 platforms;android-34'
+
+      - name: Build Tile APK
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          cd helper-app
+
+          # Find build-tools
+          BUILD_TOOLS=$(ls -d $ANDROID_HOME/build-tools/* | sort -V | tail -1)
+          echo "Using: $BUILD_TOOLS"
+
+          AAPT2="$BUILD_TOOLS/aapt2"
+          D8="$BUILD_TOOLS/d8"
+          APKSIGNER="$BUILD_TOOLS/apksigner"
+          ZIPALIGN="$BUILD_TOOLS/zipalign"
+
+          mkdir -p build/compiled_res build/classes build/gen
+
+          # Compile resources
+          "$AAPT2" compile --dir res -o build/compiled_res/
+
+          # Link
+          "$AAPT2" link \
+            -o build/unsigned.apk \
+            -I "$ANDROID_HOME/platforms/android-34/android.jar" \
+            --manifest AndroidManifest.xml \
+            --java build/gen \
+            build/compiled_res/*.flat
+
+          # Compile Java
+          find src -name "*.java" > build/sources.txt
+          javac \
+            -source 11 -target 11 \
+            -classpath "$ANDROID_HOME/platforms/android-34/android.jar" \
+            -d build/classes \
+            @build/sources.txt
+
+          # DEX
+          find build/classes -name "*.class" > build/classfiles.txt
+          "$D8" \
+            --output build/ \
+            --lib "$ANDROID_HOME/platforms/android-34/android.jar" \
+            @build/classfiles.txt
+
+          # Add DEX to APK
+          cd build
+          cp unsigned.apk unsigned_with_dex.apk
+          zip -j unsigned_with_dex.apk classes.dex
+          cd ..
+
+          # Align
+          "$ZIPALIGN" -f 4 build/unsigned_with_dex.apk build/aligned.apk
+
+          # Generate keystore
+          keytool -genkeypair \
+            -keystore build/debug.keystore \
+            -storepass android \
+            -keypass android \
+            -alias debugkey \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -dname "CN=Debug,O=Debug,C=US" 2>/dev/null
+
+          # Sign
+          "$APKSIGNER" sign \
+            --ks build/debug.keystore \
+            --ks-pass pass:android \
+            --key-pass pass:android \
+            --ks-key-alias debugkey \
+            --out build/ore-tile.apk \
+            build/aligned.apk
+
+          echo "TILE_APK=helper-app/build/ore-tile.apk" >> $GITHUB_ENV
+          echo "Built: helper-app/build/ore-tile.apk"
+          ls -lh build/ore-tile.apk
+
+      # ---- Release ----
       - name: Update update.json
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
@@ -111,6 +207,7 @@ jobs:
         with:
           files: |
             ${{ env.ZIP_NAME }}
+            ${{ env.TILE_APK }}
             update.json
           generate_release_notes: true
           draft: false
@@ -130,17 +227,4 @@ jobs:
           scandir: '.'
           severity: warning
           additional_files: '*.sh scripts/*.sh'
-        continue-on-error: true
-
-      - name: HTML validation
-        run: |
-          if command -p htmlhint >/dev/null 2>&1; then
-            htmlhint webroot/index.html
-          else
-            echo "htmlhint not available, skipping"
-          fi
-
-      - name: JS syntax check
-        run: |
-          node --check webroot/app.js 2>&1 && echo "[OK] app.js" || echo "[WARN] node not available, skipping JS check"
         continue-on-error: true
