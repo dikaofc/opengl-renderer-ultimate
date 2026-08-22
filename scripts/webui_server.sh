@@ -269,15 +269,36 @@ show_url() {
     echo "http://$ip:$PORT"
 }
 
+# ---- Check if running (returns 0 if running) ----
+is_running() {
+    if [ -f "$PIDFILE" ]; then
+        local pid=$(cat "$PIDFILE" 2>/dev/null)
+        [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null && return 0
+    fi
+    return 1
+}
+
+toggle_server() {
+    if is_running; then
+        stop_server
+    else
+        start_server
+    fi
+}
+
 # ---- Main ----
 case "${1:-}" in
     start)  start_server ;;
     stop)   stop_server ;;
     restart) stop_server; sleep 1; start_server ;;
+    toggle) toggle_server ;;
     status) status_server ;;
     url)    show_url ;;
+    is-running)
+        is_running && echo "running" || echo "stopped"
+        ;;
     *)
-        echo "Usage: $0 {start|stop|restart|status|url}"
+        echo "Usage: $0 {start|stop|restart|toggle|status|url|is-running}"
         exit 1
         ;;
 esac

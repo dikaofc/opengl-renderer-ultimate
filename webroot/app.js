@@ -1257,6 +1257,7 @@ async function loadDashboard() {
             <div class="dash-module-row"><span class="k">Game Mode</span><span class="v ${mod.gamemode === 'ACTIVE' ? 'active' : 'off'}">${escapeHtml(mod.gamemode || 'OFF')}</span></div>
             ${mod.game_pkg ? `<div class="dash-module-row"><span class="k">Active Game</span><span class="v active">${escapeHtml(mod.game_pkg)}</span></div>` : ''}
             <div class="dash-module-row"><span class="k">Active Profile</span><span class="v">${escapeHtml(mod.active_profile || 'None')}</span></div>
+            <div class="dash-module-row" id="dash-server-row"><span class="k">WebUI Server</span><span class="v" id="dash-server-status">checking...</span></div>
 
             <div class="dash-quick-actions">
                 <button class="dash-action-btn" onclick="applyAll()">
@@ -1295,6 +1296,65 @@ async function loadDashboard() {
 }
 
 // ============================================================
+// WEBUI SERVER STATUS
+// ============================================================
+
+async function checkServerStatus() {
+    const el = document.getElementById('dash-server-status');
+    if (!el) return;
+
+    // If we're in KernelSU, server status isn't relevant
+    if (typeof ksu !== 'undefined' && ksu.exec) {
+        el.textContent = 'KernelSU native';
+        el.classList.add('active');
+        return;
+    }
+
+    // Check if HTTP server is running
+    try {
+        const resp = await fetch(`${API_URL}/api/exec`, {
+            method: 'POST',
+            body: 'echo ok',
+            signal: AbortSignal.timeout(2000)
+        });
+        const text = await resp.text();
+        if (text.trim() === 'ok') {
+            el.innerHTML = `Running <span style="font-size:10px;color:var(--text-muted)">${API_URL}</span>`;
+            el.classList.add('active');
+        } else {
+            el.textContent = 'Error';
+        }
+    } catch (e) {
+        el.textContent = 'Offline — run: webui_server.sh start';
+        el.classList.add('off');
+    }
+}
+
+async function toggleWebUIServer() {
+    setStatus('Toggling WebUI server...', 'warning');
+    try {
+        // Try KernelSU first
+        if (typeof ksu !== 'undefined' && ksu.exec) {
+            const result = await shell('MODDIR=$(ls /data/adb/modules/opengl_renderer_ultimate 2>/dev/null || echo /data/adb/modules/opengl_renderer_ultimate); "$MODDIR/scripts/webui_server.sh" toggle 2>&1');
+            setStatus(result.trim() || 'Server toggled', 'success');
+            checkServerStatus();
+            return;
+        }
+
+        // Try HTTP API
+        const resp = await fetch(`${API_URL}/api/exec`, {
+            method: 'POST',
+            body: 'MODDIR=/data/adb/modules/opengl_renderer_ultimate; "$MODDIR/scripts/webui_server.sh" toggle 2>&1',
+        });
+        const result = await resp.text();
+        setStatus(result.trim() || 'Server toggled', 'success');
+        checkServerStatus();
+    } catch (e) {
+        setStatus('Cannot reach server. Run: sh webui_server.sh toggle', 'error');
+    }
+}
+
+// ============================================================
 // INIT
 // ============================================================
 
@@ -1305,5 +1365,6 @@ document.addEventListener('DOMContentLoaded', () => {
     loadProfiles();
     renderGameList();
     loadCustomGames();
-    setStatus('Ready \u2014 OpenGL Renderer Ultimate v3.0.0');
+    checkServerStatus();
+    setStatus('Ready \u2014 OpenGL Renderer Ultimate v3.2.5');
 });
