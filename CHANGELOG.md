@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [v3.2.8] - 2026-08-22
+
+### Fixed
+- **Universal APK compatibility** — minSdkVersion=24 (Android 7.0), targetSdkVersion=35
+- Supports Android 7.0 through Android 16 (API 24-35)
+- Works on all architectures: ARM, ARM64, x86, x86_64
+- Auto-detect latest SDK platform in build script
+- APK signature and alignment verification in CI
+
+---
+
 ## [v3.2.7] - 2026-08-22
 
 ### Added
@@ -246,6 +257,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 | Version | Date | Changes |
 |---------|------|---------|
+| v3.2.8 | 2026-08-22 | Universal APK (Android 7-16, all arch) |
 | v3.2.7 | 2026-08-22 | Auto-build tile APK + CI improvements |
 | v3.2.6 | 2026-08-22 | WebUI server toggle + dashboard status |
 | v3.2.5 | 2026-08-22 | Universal WebUI server for all root managers |

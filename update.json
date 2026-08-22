@@ -1,7 +1,7 @@
 {
-  "version": "v3.2.7",
-  "versionCode": 327,
-  "zipUrl": "https://github.com/dikaofc/opengl-renderer-ultimate/releases/download/v3.2.7/OpenGL_Renderer_Ultimate_v3.2.7_Flashable.zip",
+  "version": "v3.2.8",
+  "versionCode": 328,
+  "zipUrl": "https://github.com/dikaofc/opengl-renderer-ultimate/releases/download/v3.2.8/OpenGL_Renderer_Ultimate_v3.2.8_Flashable.zip",
   "changelog": "https://raw.githubusercontent.com/dikaofc/opengl-renderer-ultimate/main/CHANGELOG.md",
-  "note": "OpenGL Renderer Ultimate v3.2.7 — Auto-build tile APK + CI improvements"
+  "note": "OpenGL Renderer Ultimate v3.2.8 — Universal APK (Android 7-16, all arch)"
 }
