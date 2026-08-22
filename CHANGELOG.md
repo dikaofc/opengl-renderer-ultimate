@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [v3.2.2] - 2026-08-22
+## [v3.2.3] - 2026-08-22
 
 ### Fixed
 - **WebUI shell exec API** — `ksu.exec` callback now handles both string and object result formats across KernelSU versions. Previously all WebUI data showed as "-" and dashboard stayed on "Loading..." forever.
@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [v3.2.1] - 2026-08-22
+## [v3.2.2] - 2026-08-22
 
 ### Added
 - Module banner image (`system/banner.png`) for KernelSU Manager display
@@ -194,7 +194,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 | Version | Date | Changes |
 |---------|------|---------|
-| v3.2.2 | 2026-08-22 | Fix WebUI shell exec API + KernelSU auto-update support |
+| v3.2.3 | 2026-08-22 | Fix WebUI shell exec API + KernelSU auto-update support |
+| v3.2.2 | 2026-08-22 | Module banner for KernelSU Manager |
 | v3.2.1 | 2026-08-22 | Module banner for KernelSU Manager |
 | v3.2.0 | 2026-08-22 | Game Mode Daemon, Quick Toggle, Manual Update Checker |
 | v3.1.0 | 2026-08-22 | CI auto-build, auto-release, update.json, CONTRIBUTING.md |
