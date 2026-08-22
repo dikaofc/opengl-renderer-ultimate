@@ -9,26 +9,18 @@ MODDIR="${0%/*}/.."
 detect_cpu
 log "apply_cpu: Starting CPU optimization ($CPU_CORES cores)"
 
+# ---- Cache config values outside loops (avoid repeated forks) ----
+_gov="$(conf_get cpu_governor performance)"
+_max="$(conf_get cpu_max_freq "")"
+_min="$(conf_get cpu_min_freq "")"
+
 # ---- CPU Governor ----
 for i in $(seq 0 $((CPU_CORES - 1))); do
     cpu="/sys/devices/system/cpu/cpu$i/cpufreq"
     [ -d "$cpu" ] || continue
-
-    # Set governor from config or default to performance
-    gov="$(conf_get cpu_governor performance)"
-    write_sys "$cpu/scaling_governor" "$gov"
-
-    # Set max frequency
-    max="$(conf_get cpu_max_freq "")"
-    if [ -n "$max" ]; then
-        write_sys "$cpu/scaling_max_freq" "$max"
-    fi
-
-    # Set min frequency
-    min="$(conf_get cpu_min_freq "")"
-    if [ -n "$min" ]; then
-        write_sys "$cpu/scaling_min_freq" "$min"
-    fi
+    write_sys "$cpu/scaling_governor" "$_gov"
+    [ -n "$_max" ] && write_sys "$cpu/scaling_max_freq" "$_max"
+    [ -n "$_min" ] && write_sys "$cpu/scaling_min_freq" "$_min"
 done
 
 # ---- Scheduler Tuning ----
@@ -70,18 +62,7 @@ done
 # ---- Core Hotplug ----
 write_sys "/sys/devices/system/cpu/core_ctl/enable" "$(conf_get core_ctl_enable 0)"
 
-# ---- Temperature Mitigation ----
-# Raise trip points for max performance headroom
-for tz in /sys/class/thermal/thermal_zone*; do
-    [ -d "$tz" ] || continue
-    for tp in "$tz"/trip_point_*_temp; do
-        [ -f "$tp" ] || continue
-        cur="$(cat "$tp" 2>/dev/null)"
-        if [ -n "$cur" ] && [ "$cur" -gt 0 ] 2>/dev/null; then
-            new=$((cur + 5000))
-            write_sys "$tp" "$new"
-        fi
-    done
-done
+# NOTE: Thermal trip point modification is handled by apply_thermal.sh exclusively
+# to avoid race conditions between parallel scripts.
 
 log "apply_cpu: CPU optimization complete"

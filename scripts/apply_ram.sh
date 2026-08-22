@@ -111,7 +111,6 @@ write_sys "/sys/module/zswap/parameters/zpool" "$(conf_get zswap_zpool z3fold)"
 
 # ---- Compaction ----
 write_sys "/proc/sys/vm/compact_memory" "1"
-write_sys "/proc/sys/vm/drop_caches" "3"
 
 # ---- THP (Transparent Huge Pages) ----
 write_sys "/sys/kernel/mm/transparent_hugepage/enabled" "$(conf_get thp_enabled madvise)"

@@ -20,9 +20,9 @@ write_sys "/proc/sys/kernel/sched_autogroup_enabled" "$(conf_get sched_autogroup
 write_sys "/proc/sys/kernel/sched_cfs_bandwidth_slice_us" "$(conf_get sched_cfs_bandwidth 5000)"
 write_sys "/proc/sys/kernel/sched_energy_aware" "$(conf_get sched_energy_aware 1)"
 
-# ---- Kernel Preemption ----
-write_sys "/proc/sys/kernel/preempt" "$(conf_get kernel_preempt 1)"
-write_sys "/proc/sys/kernel/preemptive" "$(conf_get kernel_preemptive 1)"
+# ---- Kernel Preemption (read-only on most kernels, skip) ----
+# write_sys "/proc/sys/kernel/preempt" "$(conf_get kernel_preempt 1)"  # read-only
+# write_sys "/proc/sys/kernel/preemptive" "$(conf_get kernel_preemptive 1)"  # read-only
 
 # ---- HZ / Timer ----
 write_sys "/proc/sys/kernel/hz_tick" "$(conf_get hz_tick 1000)"
@@ -45,7 +45,6 @@ write_sys "/proc/sys/kernel/unprivileged_userns_clone" "$(conf_get unprivileged_
 # ---- Random ----
 write_sys "/proc/sys/kernel/random/read_wakeup_threshold" "$(conf_get random_read_wakeup 64)"
 write_sys "/proc/sys/kernel/random/write_wakeup_threshold" "$(conf_get random_write_wakeup 128)"
-write_sys "/proc/sys/kernel/random/entropy_avail" "$(conf_get random_entropy 256)"
 
 # ---- Reboot ----
 write_sys "/proc/sys/kernel/panic_on_oops" "$(conf_get panic_on_oops 1)"

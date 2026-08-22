@@ -8,10 +8,11 @@ CONF_DIR="/data/local/opengl_renderer"
 CONF="$CONF_DIR/config.conf"
 LOG_DIR="$CONF_DIR/logs"
 
-# ---- Logging ----
+# ---- Logging (cached filename to avoid fork per call) ----
+_LOG_FILE=""
 log() {
-    local msg="[$(date '+%Y-%m-%d %H:%M:%S')] $1"
-    echo "$msg" >> "$LOG_DIR/service_$(date +%Y%m%d).log" 2>/dev/null
+    [ -z "$_LOG_FILE" ] && _LOG_FILE="$LOG_DIR/service_$(date +%Y%m%d).log"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >> "$_LOG_FILE" 2>/dev/null
 }
 
 # ---- Safe setprop with logging ----

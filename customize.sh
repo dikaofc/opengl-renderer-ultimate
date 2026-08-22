@@ -7,7 +7,7 @@ SKIPUNZIP=0
 
 # Print banner
 ui_print "╔══════════════════════════════════════╗"
-ui_print "║  OpenGL Renderer Ultimate v3.2.13    ║"
+ui_print "║  OpenGL Renderer Ultimate v3.2.14    ║"
 ui_print "║  Ultimate Performance Module         ║"
 ui_print "╚══════════════════════════════════════╝"
 ui_print ""
