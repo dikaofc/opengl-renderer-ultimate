@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [v3.2.5] - 2026-08-22
+
+### Added
+- **Universal WebUI server** — lightweight HTTP server (busybox httpd / socat / nc fallback) serves WebUI at `http://127.0.0.1:8080`
+- CGI `/api/exec` endpoint for shell commands as root
+- `webui_server.sh` — start/stop/status/restart with 3 server backends
+- WebUI now works on ALL root managers: KernelSU, Magisk, Kitsune Magisk, APatch, SukiSU, Kyubi
+
+### Changed
+- `app.js` shell() falls back to HTTP API when `ksu.exec` is unavailable
+- `service.sh` auto-starts WebUI server on boot
+
+---
+
 ## [v3.2.4] - 2026-08-22
 
 ### Changed
@@ -209,6 +223,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 | Version | Date | Changes |
 |---------|------|---------|
+| v3.2.5 | 2026-08-22 | Universal WebUI server for all root managers |
 | v3.2.4 | 2026-08-22 | iOS-style UI redesign + Universal root manager support |
 | v3.2.3 | 2026-08-22 | Fix WebUI shell exec API + KernelSU auto-update support |
 | v3.2.2 | 2026-08-22 | Module banner for KernelSU Manager |
