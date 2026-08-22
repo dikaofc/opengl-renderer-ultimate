@@ -136,6 +136,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [v3.2.1] - 2026-08-22
+
+### Added
+- Module banner image (`system/banner.png`) for KernelSU Manager display
+- 500x120 Neo-Brutalism styled banner with yellow/teal/pink accents
+- Pure Python banner generator (`gen_banner.py`)
+
+---
+
 ## [v3.2.0] - 2026-08-22
 
 ### Added

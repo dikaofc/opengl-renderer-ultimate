@@ -1,6 +1,6 @@
 id=opengl_renderer_ultimate
 name=OpenGL Renderer Ultimate
-version=v3.2.0
-versionCode=320
+version=v3.2.1
+versionCode=321
 author=DikaCode
 description=Ultimate GPU/CPU/RAM/Kernel tuner with WebUI — max performance, iOS-like smoothness, no limits
