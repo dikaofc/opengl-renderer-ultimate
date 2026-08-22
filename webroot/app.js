@@ -15,13 +15,43 @@ let useApi = false;
 async function shell(cmd) {
     // 1) KernelSU native exec (works inside KSU Manager WebUI)
     if (typeof ksu !== 'undefined' && ksu.exec) {
+        // KernelSU 0.6+ uses Promise-based API; older versions use callbacks
+        const result = ksu.exec(cmd);
+
+        // If ksu.exec returned a Promise (KernelSU 0.6+)
+        if (result && typeof result.then === 'function') {
+            try {
+                const resolved = await result;
+                if (typeof resolved === 'string') return resolved;
+                if (resolved && typeof resolved.stdout === 'string') return resolved.stdout;
+                if (resolved && typeof resolved.stderr === 'string') return resolved.stderr;
+                if (resolved != null) return String(resolved);
+                return '';
+            } catch (e) {
+                console.warn('[Shell] KSU Promise exec error:', e.message);
+                return '';
+            }
+        }
+
+        // Fallback: old callback API — wrap into a Promise
         return new Promise((resolve) => {
-            ksu.exec(cmd, (result) => {
-                if (typeof result === 'string') resolve(result);
-                else if (result && typeof result.stdout === 'string') resolve(result.stdout);
-                else if (result != null) resolve(String(result));
-                else resolve('');
-            });
+            let resolved = false;
+            try {
+                ksu.exec(cmd, (callbackResult) => {
+                    if (resolved) return;
+                    resolved = true;
+                    if (typeof callbackResult === 'string') resolve(callbackResult);
+                    else if (callbackResult && typeof callbackResult.stdout === 'string') resolve(callbackResult.stdout);
+                    else if (callbackResult != null) resolve(String(callbackResult));
+                    else resolve('');
+                });
+            } catch (e) {
+                console.warn('[Shell] KSU callback exec error:', e.message);
+                resolved = true;
+                resolve('');
+            }
+            // Timeout fallback — if callback never fires after 10s
+            setTimeout(() => { if (!resolved) { resolved = true; resolve(''); } }, 10000);
         });
     }
 
@@ -310,14 +340,23 @@ async function applyOverclock() {
 // ============================================================
 
 async function loadDeviceInfo() {
-    const q = async (cmd) => (await shell(cmd)).trim();
+    const q = async (cmd) => {
+        try {
+            const r = await shell(cmd);
+            return r ? r.trim() : '';
+        } catch(e) { return ''; }
+    };
+    const safeInt = (s, fallback) => { const n = parseInt(s); return isNaN(n) ? fallback : n; };
+    const safeFreq = (khz) => { const n = safeInt(khz, 0); return n > 0 ? `${(n/1000).toFixed(0)} MHz` : '-'; };
 
-    document.getElementById('cpu-cores').textContent = await q('nproc 2>/dev/null') || '-';
-    const maxF = await q('cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq 2>/dev/null');
-    document.getElementById('cpu-max-freq').textContent = maxF ? `${(parseInt(maxF)/1000).toFixed(0)} MHz` : '-';
-    const minF = await q('cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_min_freq 2>/dev/null');
-    document.getElementById('cpu-min-freq').textContent = minF ? `${(parseInt(minF)/1000).toFixed(0)} MHz` : '-';
-    document.getElementById('cpu-governor').textContent = await q('cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor 2>/dev/null') || '-';
+    // Show refresh indicators on active info grids
+    const grids = document.querySelectorAll('.info-grid');
+    grids.forEach(g => g.classList.add('refreshing'));
+
+    document.getElementById('cpu-cores').textContent = (await q('nproc 2>/dev/null')) || '-';
+    document.getElementById('cpu-max-freq').textContent = safeFreq(await q('cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq 2>/dev/null'));
+    document.getElementById('cpu-min-freq').textContent = safeFreq(await q('cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_min_freq 2>/dev/null'));
+    document.getElementById('cpu-governor').textContent = (await q('cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor 2>/dev/null')) || '-';
 
     const egl = await q('getprop ro.hardware.egl 2>/dev/null');
     const vk = await q('getprop ro.hardware.vulkan 2>/dev/null');
@@ -325,28 +364,32 @@ async function loadDeviceInfo() {
     document.getElementById('gpu-vulkan').textContent = vk || '-';
 
     let vendor = 'Unknown', renderer = '-';
-    const el = egl.toLowerCase();
+    const el = (egl || '').toLowerCase();
     if (el.includes('adreno') || el.includes('kgsl')) { vendor = 'Qualcomm'; renderer = 'Adreno'; }
     else if (el.includes('mali')) { vendor = 'ARM'; renderer = 'Mali'; }
     else if (el.includes('xclipse')) { vendor = 'Samsung'; renderer = 'Xclipse'; }
     document.getElementById('gpu-vendor').textContent = vendor;
     document.getElementById('gpu-renderer').textContent = renderer;
 
-    const memT = await q('grep MemTotal /proc/meminfo | awk \'{print $2}\'');
-    const memA = await q('grep MemAvailable /proc/meminfo | awk \'{print $2}\'');
-    document.getElementById('ram-total').textContent = memT ? `${(parseInt(memT)/1024).toFixed(0)} MB` : '-';
-    document.getElementById('ram-avail').textContent = memA ? `${(parseInt(memA)/1024).toFixed(0)} MB` : '-';
+    const memT = safeInt(await q('grep MemTotal /proc/meminfo | awk \'{print $2}\''), 0);
+    const memA = safeInt(await q('grep MemAvailable /proc/meminfo | awk \'{print $2}\''), 0);
+    document.getElementById('ram-total').textContent = memT > 0 ? `${(memT/1024).toFixed(0)} MB` : '-';
+    document.getElementById('ram-avail').textContent = memA > 0 ? `${(memA/1024).toFixed(0)} MB` : '-';
     document.getElementById('ram-zram').textContent = (await q('lsblk -o NAME,SIZE 2>/dev/null | grep zram | head -1')) || 'None';
-    document.getElementById('ram-swap').textContent = (await q('free 2>/dev/null | grep Swap | awk \'{print $2}\'')) ? `${(parseInt(await q('free 2>/dev/null | grep Swap | awk \'{print $2}\''))/1024).toFixed(0)} MB` : 'None';
+    const swapRaw = safeInt(await q('free 2>/dev/null | grep Swap | awk \'{print $2}\''), 0);
+    document.getElementById('ram-swap').textContent = swapRaw > 0 ? `${(swapRaw/1024).toFixed(0)} MB` : 'None';
 
-    document.getElementById('gl-hwui').textContent = await q('getprop debug.hwui.renderer 2>/dev/null') || '-';
-    document.getElementById('gl-renderengine').textContent = await q('getprop debug.renderengine.backend 2>/dev/null') || '-';
-    document.getElementById('gl-msaa').textContent = await q('getprop debug.egl.force_msaa 2>/dev/null') || '-';
-    document.getElementById('gl-framepacing').textContent = await q('getprop debug.hwui.frame_pacing 2>/dev/null') || '-';
+    document.getElementById('gl-hwui').textContent = (await q('getprop debug.hwui.renderer 2>/dev/null')) || '-';
+    document.getElementById('gl-renderengine').textContent = (await q('getprop debug.renderengine.backend 2>/dev/null')) || '-';
+    document.getElementById('gl-msaa').textContent = (await q('getprop debug.egl.force_msaa 2>/dev/null')) || '-';
+    document.getElementById('gl-framepacing').textContent = (await q('getprop debug.hwui.frame_pacing 2>/dev/null')) || '-';
 
-    document.getElementById('thermal-zones').textContent = await q('ls -d /sys/class/thermal/thermal_zone* 2>/dev/null | wc -l') || '-';
-    const temp = await q('cat /sys/class/thermal/thermal_zone0/temp 2>/dev/null');
-    document.getElementById('thermal-current').textContent = temp ? `${(parseInt(temp)/1000).toFixed(1)}C` : '-';
+    document.getElementById('thermal-zones').textContent = (await q('ls -d /sys/class/thermal/thermal_zone* 2>/dev/null | wc -l')) || '-';
+    const temp = safeInt(await q('cat /sys/class/thermal/thermal_zone0/temp 2>/dev/null'), 0);
+    document.getElementById('thermal-current').textContent = temp > 0 ? `${(temp/1000).toFixed(1)}°C` : '-';
+
+    // Remove refresh indicators after short delay
+    setTimeout(() => grids.forEach(g => g.classList.remove('refreshing')), 300);
 }
 
 // ============================================================
@@ -1120,20 +1163,74 @@ function tempColor(millideg) {
     return 'green';
 }
 
+let dashRefreshTimer = null;
+let dashIsRefreshing = false;
+
+function showDashRefreshStart() {
+    dashIsRefreshing = true;
+    // Activate refresh bar
+    const bar = document.getElementById('dash-refresh-bar');
+    const progress = document.getElementById('dash-refresh-progress');
+    if (bar) {
+        bar.classList.add('active');
+        progress.classList.remove('done');
+        progress.style.width = '40%';
+    }
+    // Show spinners on cards
+    document.querySelectorAll('.dash-stat-spinner').forEach(s => s.classList.add('active'));
+    // Pause live badge animation briefly
+    const badge = document.getElementById('live-badge');
+    if (badge) { badge.textContent = 'UPDATING'; badge.style.color = 'var(--orange)'; }
+}
+
+function showDashRefreshDone() {
+    dashIsRefreshing = false;
+    const bar = document.getElementById('dash-refresh-bar');
+    const progress = document.getElementById('dash-refresh-progress');
+    if (progress) {
+        progress.style.width = '100%';
+        progress.classList.add('done');
+    }
+    setTimeout(() => {
+        if (bar) bar.classList.remove('active');
+        if (progress) { progress.classList.remove('done'); progress.style.width = '0%'; }
+    }, 800);
+    // Hide spinners
+    document.querySelectorAll('.dash-stat-spinner').forEach(s => s.classList.remove('active'));
+    // Flash cards
+    document.querySelectorAll('.dash-stat-card').forEach(c => {
+        c.classList.remove('flash');
+        void c.offsetWidth; // reflow
+        c.classList.add('flash');
+    });
+    // Restore live badge
+    const badge = document.getElementById('live-badge');
+    if (badge) { badge.textContent = 'LIVE'; badge.style.color = ''; }
+}
+
 async function loadDashboard() {
     const loading = document.getElementById('dash-loading');
     const content = document.getElementById('dash-content');
-    loading.style.display = 'flex';
-    content.style.display = 'none';
+    const isInitial = content.style.display === 'none';
+    if (isInitial) {
+        loading.style.display = 'flex';
+        content.style.display = 'none';
+    } else {
+        showDashRefreshStart();
+    }
 
     const raw = await shell(`${MODDIR}/scripts/dashboard.sh 2>/dev/null`);
-    loading.style.display = 'none';
+    if (isInitial) loading.style.display = 'none';
 
     try {
+        if (!raw || !raw.trim()) throw new Error('Empty response from dashboard.sh');
         const jsonStart = raw.indexOf('{');
         const jsonEnd = raw.lastIndexOf('}');
-        if (jsonStart === -1) throw new Error('No JSON');
-        const d = JSON.parse(raw.substring(jsonStart, jsonEnd + 1));
+        if (jsonStart === -1 || jsonEnd === -1) throw new Error('No JSON in output: ' + raw.substring(0, 200));
+        const jsonStr = raw.substring(jsonStart, jsonEnd + 1);
+        // Sanitize: remove trailing commas before } or ] which are invalid JSON
+        const sanitized = jsonStr.replace(/,\s*([}\]])/g, '$1');
+        const d = JSON.parse(sanitized);
 
         // Device Card
         const dv = d.device || {};
@@ -1160,6 +1257,7 @@ async function loadDashboard() {
         // CPU
         statsHtml += `
             <div class="dash-stat-card">
+                <div class="dash-stat-spinner"></div>
                 <div class="dash-stat-header">
                     <span class="dash-stat-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="4" y="4" width="16" height="16" rx="2"/></svg> CPU</span>
                 </div>
@@ -1172,6 +1270,7 @@ async function loadDashboard() {
         // GPU
         statsHtml += `
             <div class="dash-stat-card">
+                <div class="dash-stat-spinner"></div>
                 <div class="dash-stat-header">
                     <span class="dash-stat-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="6" width="20" height="12" rx="2"/></svg> GPU</span>
                 </div>
@@ -1185,6 +1284,7 @@ async function loadDashboard() {
         const ramPct = ram.usage_pct || 0;
         statsHtml += `
             <div class="dash-stat-card">
+                <div class="dash-stat-spinner"></div>
                 <div class="dash-stat-header">
                     <span class="dash-stat-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="6" width="20" height="12" rx="2"/></svg> RAM</span>
                 </div>
@@ -1198,6 +1298,7 @@ async function loadDashboard() {
         const storPct = storage.data_pct || 0;
         statsHtml += `
             <div class="dash-stat-card">
+                <div class="dash-stat-spinner"></div>
                 <div class="dash-stat-header">
                     <span class="dash-stat-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/></svg> Storage</span>
                 </div>
@@ -1212,6 +1313,7 @@ async function loadDashboard() {
         const batColor = batLvl >= 50 ? 'green' : batLvl >= 20 ? 'yellow' : 'red';
         statsHtml += `
             <div class="dash-stat-card">
+                <div class="dash-stat-spinner"></div>
                 <div class="dash-stat-header">
                     <span class="dash-stat-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="1" y="6" width="18" height="12" rx="2"/><line x1="23" y1="10" x2="23" y2="14"/></svg> Battery</span>
                 </div>
@@ -1226,6 +1328,7 @@ async function loadDashboard() {
         const tempC = thermal.max_temp ? (thermal.max_temp / 1000).toFixed(1) : '-';
         statsHtml += `
             <div class="dash-stat-card">
+                <div class="dash-stat-spinner"></div>
                 <div class="dash-stat-header">
                     <span class="dash-stat-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg> Thermal</span>
                 </div>
@@ -1236,6 +1339,7 @@ async function loadDashboard() {
         // Network
         statsHtml += `
             <div class="dash-stat-card">
+                <div class="dash-stat-spinner"></div>
                 <div class="dash-stat-header">
                     <span class="dash-stat-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12.55a11 11 0 0 1 14.08 0"/></svg> Network</span>
                 </div>
@@ -1246,6 +1350,10 @@ async function loadDashboard() {
             </div>`;
 
         document.getElementById('dash-stats').innerHTML = statsHtml;
+
+        // Last updated timestamp
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit'});
 
         // Module Status
         const mod = d.module || {};
@@ -1258,6 +1366,7 @@ async function loadDashboard() {
             ${mod.game_pkg ? `<div class="dash-module-row"><span class="k">Active Game</span><span class="v active">${escapeHtml(mod.game_pkg)}</span></div>` : ''}
             <div class="dash-module-row"><span class="k">Active Profile</span><span class="v">${escapeHtml(mod.active_profile || 'None')}</span></div>
             <div class="dash-module-row" id="dash-server-row"><span class="k">WebUI Server</span><span class="v" id="dash-server-status">checking...</span></div>
+            <div class="dash-module-row"><span class="k">Last Updated</span><span class="v" style="color:var(--teal)"> ${timeStr}</span></div>
 
             <div class="dash-quick-actions">
                 <button class="dash-action-btn" onclick="applyAll()">
@@ -1287,10 +1396,15 @@ async function loadDashboard() {
             </div>`;
 
         content.style.display = 'block';
+        if (!isInitial) showDashRefreshDone();
         setStatus('Dashboard loaded!', 'success');
     } catch (e) {
-        loading.innerHTML = `<div class="profile-empty">Error: ${escapeHtml(e.message)}</div>`;
-        loading.style.display = 'flex';
+        if (isInitial) {
+            loading.innerHTML = `<div class="profile-empty">Error: ${escapeHtml(e.message)}</div>`;
+            loading.style.display = 'flex';
+        } else {
+            showDashRefreshDone();
+        }
         console.log('[Dashboard Raw]', raw);
     }
 }
@@ -1327,6 +1441,13 @@ async function checkServerStatus() {
     } catch (e) {
         el.textContent = 'Offline — run: webui_server.sh start';
         el.classList.add('off');
+    }
+
+    // Also update settings sheet server status if visible
+    const settingsEl = document.getElementById('settings-server-status');
+    if (settingsEl) {
+        settingsEl.textContent = el.textContent;
+        settingsEl.className = el.className;
     }
 }
 
@@ -1366,5 +1487,48 @@ document.addEventListener('DOMContentLoaded', () => {
     renderGameList();
     loadCustomGames();
     checkServerStatus();
-    setStatus('Ready \u2014 OpenGL Renderer Ultimate v3.2.5');
+    setStatus('Ready \u2014 OpenGL Renderer Ultimate v3.2.10');
+
+    // Auto-refresh dashboard every 10 seconds (realtime)
+    const refreshInterval = setInterval(() => {
+        const dashTab = document.getElementById('tab-home');
+        const badge = document.getElementById('live-badge');
+        if (dashTab && dashTab.classList.contains('active')) {
+            if (badge) { badge.classList.remove('paused'); badge.textContent = 'LIVE'; badge.style.color = ''; }
+            loadDashboard();
+        } else {
+            if (badge) { badge.classList.add('paused'); badge.textContent = 'PAUSED'; }
+        }
+    }, 10000);
+
+    // Update live badge on tab switch
+    document.querySelectorAll('.bottom-nav-item[data-tab]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const badge = document.getElementById('live-badge');
+            if (!badge) return;
+            setTimeout(() => {
+                const dashTab = document.getElementById('tab-home');
+                if (dashTab && dashTab.classList.contains('active')) {
+                    badge.classList.remove('paused');
+                    badge.textContent = 'LIVE';
+                    badge.style.color = '';
+                } else {
+                    badge.classList.add('paused');
+                    badge.textContent = 'PAUSED';
+                }
+            }, 250);
+        });
+    });
+
+    // Auto-refresh device info when CPU/GPU/RAM/Thermal tabs are active
+    setInterval(() => {
+        const cpuTab = document.getElementById('tab-cpu');
+        const gpuTab = document.getElementById('tab-gpu');
+        const ramTab = document.getElementById('tab-ram');
+        const thermalTab = document.getElementById('tab-thermal');
+        const active = document.querySelector('.tab-content.active');
+        if (active && (active === cpuTab || active === gpuTab || active === ramTab || active === thermalTab)) {
+            loadDeviceInfo();
+        }
+    }, 5000);
 });

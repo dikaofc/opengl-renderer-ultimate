@@ -30,7 +30,7 @@ SRC_DIR="src"
 RES_DIR="res"
 MANIFEST="AndroidManifest.xml"
 MIN_API=24
-TARGET_API=35
+TARGET_API=36
 
 # ---- Find Android SDK ----
 if [ -n "$ANDROID_HOME" ]; then

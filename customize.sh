@@ -7,7 +7,7 @@ SKIPUNZIP=0
 
 # Print banner
 ui_print "╔══════════════════════════════════════╗"
-ui_print "║  OpenGL Renderer Ultimate v3.2.3    ║"
+ui_print "║  OpenGL Renderer Ultimate v3.2.10    ║"
 ui_print "║  Ultimate Performance Module         ║"
 ui_print "╚══════════════════════════════════════╝"
 ui_print ""
@@ -31,6 +31,11 @@ set_perm_recursive "$MODPATH/webroot" 0 0 0755 0644
 
 # Make all .sh files executable
 find "$MODPATH" -name "*.sh" -exec chmod 0755 {} \; 2>/dev/null
+
+# Ensure webroot is readable by web server
+chmod -R 0755 "$MODPATH/webroot" 2>/dev/null
+mkdir -p "$MODPATH/webroot/cgi-bin"
+chmod 0755 "$MODPATH/webroot/cgi-bin" 2>/dev/null
 
 # Create data config directory
 mkdir -p /data/local/opengl_renderer

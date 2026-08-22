@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg"
+    android:paddingBottom="32dp"
+    android:clipToPadding="false">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Header -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_title"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="@color/text"
+            android:paddingBottom="4dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Configure all module settings from this app"
+            android:textSize="12sp"
+            android:textColor="@color/text_dim"
+            android:paddingBottom="16dp" />
+
+        <!-- ======== CPU SECTION ======== -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:background="@drawable/card_bg"
+            android:padding="2dp" android:layout_marginBottom="12dp"
+            android:elevation="1dp">
+
+            <TextView style="@style/SectionHeader" android:text="@string/cpu_config" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/cpu_governor" />
+                <Spinner android:id="@+id/spinner_cpu_gov" style="@style/SettingSpinner"
+                    android:entries="@array/governors" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginLeft="16dp" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string.governor_lock" />
+                <Switch android:id="@+id/switch_gov_lock" android:layout_width="wrap_content" android:layout_height="wrap_content" android:checked="true" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginLeft="16dp" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/cpu_max_freq" />
+                <EditText android:id="@+id/edit_cpu_max" style="@style/SettingInput"
+                    android:hint="Auto" android:inputType="number" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginLeft="16dp" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/cpu_min_freq" />
+                <EditText android:id="@+id/edit_cpu_min" style="@style/SettingInput"
+                    android:hint="Auto" android:inputType="number" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginLeft="16dp" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/input_boost" />
+                <EditText android:id="@+id/edit_input_boost" style="@style/SettingInput"
+                    android:text="0" android:inputType="number" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginLeft="16dp" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/boost_duration" />
+                <EditText android:id="@+id/edit_boost_ms" style="@style/SettingInput"
+                    android:text="50" android:inputType="number" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ======== GPU SECTION ======== -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:background="@drawable/card_bg"
+            android:padding="2dp" android:layout_marginBottom="12dp"
+            android:elevation="1dp">
+
+            <TextView style="@style/SectionHeader" android:text="@string/gpu_config" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/gpu_governor" />
+                <Spinner android:id="@+id/spinner_gpu_gov" style="@style/SettingSpinner"
+                    android:entries="@array/gpu_governors" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginLeft="16dp" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/gpu_overclock" />
+                <Switch android:id="@+id/switch_gpu_oc" android:layout_width="wrap_content" android:layout_height="wrap_content" android:checked="true" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginLeft="16dp" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/gpu_max_freq" />
+                <EditText android:id="@+id/edit_gpu_max" style="@style/SettingInput"
+                    android:hint="Auto" android:inputType="number" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginLeft="16dp" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/adreno_force_clk" />
+                <Switch android:id="@+id/switch_force_clk" android:layout_width="wrap_content" android:layout_height="wrap_content" android:checked="true" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginLeft="16dp" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/adreno_force_bus" />
+                <Switch android:id="@+id/switch_force_bus" android:layout_width="wrap_content" android:layout_height="wrap_content" android:checked="true" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginLeft="16dp" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/adreno_idle" />
+                <EditText android:id="@+id/edit_idle_timer" style="@style/SettingInput"
+                    android:text="50" android:inputType="number" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ======== RAM SECTION ======== -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:background="@drawable/card_bg"
+            android:padding="2dp" android:layout_marginBottom="12dp"
+            android:elevation="1dp">
+
+            <TextView style="@style/SectionHeader" android:text="@string/ram_config" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/swappiness" />
+                <EditText android:id="@+id/edit_swappiness" style="@style/SettingInput"
+                    android:text="100" android:inputType="number" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginLeft="16dp" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/dirty_ratio" />
+                <EditText android:id="@+id/edit_dirty_ratio" style="@style/SettingInput"
+                    android:text="40" android:inputType="number" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginLeft="16dp" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/dirty_bg" />
+                <EditText android:id="@+id/edit_dirty_bg" style="@style/SettingInput"
+                    android:text="10" android:inputType="number" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginLeft="16dp" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/vfs_cache" />
+                <EditText android:id="@+id/edit_vfs_cache" style="@style/SettingInput"
+                    android:text="50" android:inputType="number" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginLeft="16dp" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/min_free" />
+                <EditText android:id="@+id/edit_min_free" style="@style/SettingInput"
+                    android:text="12288" android:inputType="number" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginLeft="16dp" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/io_scheduler" />
+                <Spinner android:id="@+id/spinner_io_sched" style="@style/SettingSpinner"
+                    android:entries="@array/io_schedulers" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginLeft="16dp" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/readahead" />
+                <EditText android:id="@+id/edit_readahead" style="@style/SettingInput"
+                    android:text="2048" android:inputType="number" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginLeft="16dp" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/zram_size" />
+                <EditText android:id="@+id/edit_zram" style="@style/SettingInput"
+                    android:hint="Auto" android:inputType="number" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ======== NETWORK SECTION ======== -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:background="@drawable/card_bg"
+            android:padding="2dp" android:layout_marginBottom="12dp"
+            android:elevation="1dp">
+
+            <TextView style="@style/SectionHeader" android:text="@string/network_config" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/tcp_congestion" />
+                <Spinner android:id="@+id/spinner_tcp" style="@style/SettingSpinner"
+                    android:entries="@array/tcp_congestions" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginLeft="16dp" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/qdisc" />
+                <Spinner android:id="@+id/spinner_qdisc" style="@style/SettingSpinner"
+                    android:entries="@array/qdiscs" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginLeft="16dp" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/tcp_fastopen" />
+                <Spinner android:id="@+id/spinner_fastopen" style="@style/SettingSpinner"
+                    android:entries="@array/fastopen_values" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginLeft="16dp" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/mtu_probe" />
+                <Switch android:id="@+id/switch_mtu" android:layout_width="wrap_content" android:layout_height="wrap_content" android:checked="true" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginLeft="16dp" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/somaxconn" />
+                <EditText android:id="@+id/edit_somaxconn" style="@style/SettingInput"
+                    android:text="4096" android:inputType="number" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ======== THERMAL SECTION ======== -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:background="@drawable/card_bg"
+            android:padding="2dp" android:layout_marginBottom="12dp"
+            android:elevation="1dp">
+
+            <TextView style="@style/SectionHeader" android:text="@string/thermal_config" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/thermal_mode" />
+                <Spinner android:id="@+id/spinner_thermal" style="@style/SettingSpinner"
+                    android:entries="@array/thermal_modes" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginLeft="16dp" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/cpu_throttle" />
+                <EditText android:id="@+id/edit_cpu_throttle" style="@style/SettingInput"
+                    android:text="95000" android:inputType="number" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginLeft="16dp" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/gpu_throttle" />
+                <EditText android:id="@+id/edit_gpu_throttle" style="@style/SettingInput"
+                    android:text="95000" android:inputType="number" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginLeft="16dp" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/polling" />
+                <EditText android:id="@+id/edit_polling" style="@style/SettingInput"
+                    android:text="2000" android:inputType="number" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ======== OPENGL SECTION ======== -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:background="@drawable/card_bg"
+            android:padding="2dp" android:layout_marginBottom="12dp"
+            android:elevation="1dp">
+
+            <TextView style="@style/SectionHeader" android:text="@string/opengl_config" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/hwui_renderer" />
+                <Spinner android:id="@+id/spinner_renderer" style="@style/SettingSpinner"
+                    android:entries="@array/renderers" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginLeft="16dp" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/renderengine" />
+                <Spinner android:id="@+id/spinner_re" style="@style/SettingSpinner"
+                    android:entries="@array/renderers" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginLeft="16dp" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/hwui_cpu_time" />
+                <EditText android:id="@+id/edit_hwui_cpu" style="@style/SettingInput"
+                    android:text="25" android:inputType="number" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginLeft="16dp" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/tex_cache" />
+                <EditText android:id="@+id/edit_tex_cache" style="@style/SettingInput"
+                    android:text="96" android:inputType="number" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginLeft="16dp" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/layer_cache" />
+                <EditText android:id="@+id/edit_layer_cache" style="@style/SettingInput"
+                    android:text="48" android:inputType="number" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginLeft="16dp" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/frame_pacing" />
+                <Switch android:id="@+id/switch_frame_pacing" android:layout_width="wrap_content" android:layout_height="wrap_content" android:checked="true" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginLeft="16dp" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/multi_thread" />
+                <Switch android:id="@+id/switch_multi_thread" android:layout_width="wrap_content" android:layout_height="wrap_content" android:checked="true" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ======== ANIMATION SECTION ======== -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:background="@drawable/card_bg"
+            android:padding="2dp" android:layout_marginBottom="12dp"
+            android:elevation="1dp">
+
+            <TextView style="@style/SectionHeader" android:text="@string/anim_config" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/window_anim" />
+                <Spinner android:id="@+id/spinner_win_anim" style="@style/SettingSpinner"
+                    android:entries="@array/anim_scales" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginLeft="16dp" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/transition_anim" />
+                <Spinner android:id="@+id/spinner_trans_anim" style="@style/SettingSpinner"
+                    android:entries="@array/anim_scales" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginLeft="16dp" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/animator_dur" />
+                <Spinner android:id="@+id/spinner_anim_dur" style="@style/SettingSpinner"
+                    android:entries="@array/anim_scales" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ======== KERNEL SECTION ======== -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:background="@drawable/card_bg"
+            android:padding="2dp" android:layout_marginBottom="12dp"
+            android:elevation="1dp">
+
+            <TextView style="@style/SectionHeader" android:text="@string/kernel_config" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/sched_autogroup" />
+                <Switch android:id="@+id/switch_autogroup" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginLeft="16dp" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/sched_child" />
+                <Switch android:id="@+id/switch_child_runs" android:layout_width="wrap_content" android:layout_height="wrap_content" android:checked="true" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginLeft="16dp" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/fsync" />
+                <Switch android:id="@+id/switch_fsync" android:layout_width="wrap_content" android:layout_height="wrap_content" android:checked="true" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginLeft="16dp" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/bpf_jit" />
+                <Switch android:id="@+id/switch_bpf" android:layout_width="wrap_content" android:layout_height="wrap_content" android:checked="true" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginLeft="16dp" />
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="@string/sysrq" />
+                <Switch android:id="@+id/switch_sysrq" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ======== ACTION BUTTONS ======== -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp" android:paddingLeft="2dp" android:paddingRight="2dp">
+
+            <Button android:id="@+id/btn_apply" style="@style/ActionButton"
+                android:text="@string/apply_all" android:layout_marginRight="6dp" />
+            <Button android:id="@+id/btn_save" style="@style/ActionButton"
+                android:text="@string/save_config" android:backgroundTint="@color/green" />
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:paddingLeft="2dp" android:paddingRight="2dp"
+            android:layout_marginBottom="8dp">
+
+            <Button android:id="@+id/btn_reset" style="@style/ActionButton"
+                android:text="@string/reset_defaults" android:layout_marginRight="6dp"
+                android:backgroundTint="#FF9F0A" />
+            <Button android:id="@+id/btn_reboot" style="@style/DangerButton"
+                android:text="@string/reboot" />
+        </LinearLayout>
+
+        <!-- Status -->
+        <TextView android:id="@+id/tv_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ready"
+            android:textSize="12sp"
+            android:textColor="@color/text_dim"
+            android:textAlignment="center"
+            android:paddingTop="8dp"
+            android:paddingBottom="16dp" />
+
+    </LinearLayout>
+</ScrollView>

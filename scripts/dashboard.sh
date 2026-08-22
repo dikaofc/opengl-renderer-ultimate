@@ -219,6 +219,11 @@ get_device() {
     echo "\"model\":\"$model\",\"brand\":\"$brand\",\"device\":\"$device\",\"android\":\"$android\",\"sdk\":$sdk,\"soc\":\"$soc\",\"kernel\":\"$kernel\",\"uptime\":$uptime"
 }
 
+# ---- JSON-safe string helper ----
+json_safe() {
+    echo "$1" | sed 's/\\/\\\\/g; s/"/\\"/g' | tr -d '\n\r' | tr '\t' ' '
+}
+
 # ---- Full Report ----
 full_report() {
     echo "{"

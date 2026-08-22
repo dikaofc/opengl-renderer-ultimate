@@ -1,33 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.openglrenderer.tile"
-    android:versionCode="1"
-    android:versionName="1.0">
+    android:versionCode="3"
+    android:versionName="1.2">
 
-    <!-- TileService requires API 24+ (Android 7.0) -->
+    <!-- TileService requires API 24+ (Android 7.0), works on Android 7–16 -->
     <uses-sdk
         android:minSdkVersion="24"
-        android:targetSdkVersion="35"
-        tools:overrideLibrary="androidx.core" />
+        android:targetSdkVersion="36" />
 
     <uses-permission android:name="android.permission.QUICK_SETTINGS" />
 
     <application
-        android:label="ORE Tile"
+        android:label="ORE Settings"
         android:icon="@drawable/tile_icon"
         android:allowBackup="false"
-        android:supportsRtl="true"
-        android:extractNativeLibs="false"
-        android:useEmbeddedDex="true">
+        android:supportsRtl="true">
 
+        <activity
+            android:name=".SettingsActivity"
+            android:label="ORE Settings"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- TileService — NO foregroundServiceType (TileService is system-managed, not a FG service) -->
         <service
             android:name=".ServerTileService"
             android:icon="@drawable/tile_icon"
             android:label="WebUI Toggle"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
-            android:exported="true"
-            android:foregroundServiceType="specialUse">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>

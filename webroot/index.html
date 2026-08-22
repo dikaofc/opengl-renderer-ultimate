@@ -38,8 +38,11 @@
         <!-- ==================== HOME / DASHBOARD TAB ==================== -->
         <section class="tab-content active" id="tab-home">
             <div class="dash-header">
-                <h2>Dashboard</h2>
+                <h2>Dashboard <span class="live-badge" id="live-badge">LIVE</span></h2>
                 <button class="btn btn-sm btn-primary" onclick="loadDashboard()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> Refresh</button>
+            </div>
+            <div class="dash-refresh-bar" id="dash-refresh-bar">
+                <div class="dash-refresh-progress" id="dash-refresh-progress"></div>
             </div>
             <div id="dash-loading" class="warning-box">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation:spin 1s linear infinite"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg>
@@ -308,6 +311,52 @@
             <span>More</span>
         </button>
     </nav>
+
+    <!-- ==================== SETTINGS SHEET ==================== -->
+    <div class="sheet" id="sheet-settings">
+        <div class="sheet-handle" onclick="closeSheet()"><div class="sheet-handle-bar"></div></div>
+        <div class="sheet-header">
+            <h2>Settings</h2>
+        </div>
+        <div style="padding: 0 20px 16px;">
+            <div class="control-group">
+                <h3>WebUI Server</h3>
+                <div class="control-row">
+                    <label>Server Status</label>
+                    <span id="settings-server-status" style="font-size:12px;font-weight:600;">checking...</span>
+                </div>
+                <div class="control-row">
+                    <label>Start/Stop HTTP Server</label>
+                    <button class="btn btn-sm btn-primary" onclick="toggleWebUIServer()">Toggle</button>
+                </div>
+            </div>
+            <div class="control-group">
+                <h3>Config</h3>
+                <div class="control-row">
+                    <label>Reload config from file</label>
+                    <button class="btn btn-sm btn-secondary" onclick="loadConfig()">Reload</button>
+                </div>
+                <div class="control-row">
+                    <label>Save current config</label>
+                    <button class="btn btn-sm btn-secondary" onclick="saveConfig()">Save</button>
+                </div>
+                <div class="control-row">
+                    <label>Apply all settings now</label>
+                    <button class="btn btn-sm btn-success" onclick="applyAll()">Apply</button>
+                </div>
+            </div>
+            <div class="control-group">
+                <h3>Danger Zone</h3>
+                <div class="control-row">
+                    <label>Reboot device</label>
+                    <button class="btn btn-sm btn-danger" onclick="rebootDevice()">Reboot</button>
+                </div>
+            </div>
+            <div style="text-align:center;padding:12px 0;font-size:11px;color:var(--text-muted);">
+                OpenGL Renderer Ultimate v3.2.10
+            </div>
+        </div>
+    </div>
 
     <!-- ==================== BOTTOM SHEET (More Menu) ==================== -->
     <div class="sheet-overlay" id="sheet-overlay" onclick="closeSheet()"></div>

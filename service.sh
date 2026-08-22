@@ -72,7 +72,27 @@ log "service.sh: Starting Game Mode daemon..."
 
 # ---- Start WebUI Server (for non-KSU managers) ----
 log "service.sh: Starting WebUI server..."
-"$MODDIR/scripts/webui_server.sh" start >/dev/null 2>&1
+"$MODDIR/scripts/webui_server.sh" start >> "$LOG" 2>&1
+WEBUI_STATUS=$?
+if [ $WEBUI_STATUS -ne 0 ]; then
+    log "service.sh: WebUI server start returned code $WEBUI_STATUS, retrying in 10s..."
+    sleep 10
+    "$MODDIR/scripts/webui_server.sh" start >> "$LOG" 2>&1
+fi
+# Verify server is running (extra wait for busybox to bind port)
+sleep 3
+if "$MODDIR/scripts/webui_server.sh" is-running >/dev/null 2>&1; then
+    log "service.sh: WebUI server is running on http://127.0.0.1:8080"
+else
+    log "service.sh: WARNING — WebUI server failed to start, will retry after delay..."
+    sleep 15
+    "$MODDIR/scripts/webui_server.sh" start >> "$LOG" 2>&1
+    if "$MODDIR/scripts/webui_server.sh" is-running >/dev/null 2>&1; then
+        log "service.sh: WebUI server started on retry"
+    else
+        log "service.sh: ERROR — WebUI server could not be started"
+    fi
+fi
 
 # ---- Check for Updates (silent) ----
 log "service.sh: Checking for updates..."

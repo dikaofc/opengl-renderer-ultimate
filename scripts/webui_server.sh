@@ -40,16 +40,18 @@ start_server() {
     mkdir -p "$cgi_dir"
     chmod 0755 "$cgi_dir"
 
-    # Write the CGI exec handler
+    # Write the API exec handler (served at /api/exec)
     cat > "$cgi_dir/exec.sh" << 'CGI_EOF'
 #!/system/bin/sh
-# CGI endpoint — execute shell commands as root
+# API endpoint — execute shell commands as root
 
 # Read POST body (the command)
 if [ "$REQUEST_METHOD" = "POST" ]; then
     BODY=$(dd bs=1 count=4096 2>/dev/null)
-else
+elif [ -n "$QUERY_STRING" ]; then
     BODY="$QUERY_STRING"
+else
+    BODY=""
 fi
 
 # URL-decode
@@ -57,29 +59,44 @@ BODY=$(echo "$BODY" | sed 's/+/ /g; s/%\([0-9A-Fa-f][0-9A-Fa-f]\)/\\x\1/g' | xar
 
 # Execute and return stdout
 if [ -n "$BODY" ]; then
-    RESULT=$($BODY 2>&1)
-    printf "Content-type: text/plain\r\n\r\n%s" "$RESULT"
+    RESULT=$(eval "$BODY" 2>&1)
+    printf "Content-type: text/plain\r\nAccess-Control-Allow-Origin: *\r\n\r\n%s" "$RESULT"
 else
-    printf "Content-type: text/plain\r\n\r\n"
+    printf "Content-type: text/plain\r\nAccess-Control-Allow-Origin: *\r\n\r\n"
 fi
 CGI_EOF
     chmod 0755 "$cgi_dir/exec.sh"
 
+    # Ensure webroot is readable
+    chmod -R 0755 "$WEBROOT" 2>/dev/null
+
     # Try busybox httpd first (most common on rooted devices)
     if command -v busybox >/dev/null 2>&1; then
         log "Using busybox httpd"
-        busybox httpd -p "$PORT" -h "$WEBROOT" -c /data/local/opengl_renderer/httpd.conf 2>> "$LOG" &
+        # NOTE: busybox httpd -c is for auth config (URL:REALM:USER_FILE:METHOD)
+        # Do NOT pass -c — we serve files directly from -h webroot
+        busybox httpd -p "$PORT" -h "$WEBROOT" -f 2>> "$LOG" &
         local pid=$!
-        echo "$pid" > "$PIDFILE"
-        log "Server started (busybox httpd, PID $pid)"
-
-        # Write config for busybox httpd
-        cat > /data/local/opengl_renderer/httpd.conf << CONF_EOF
-$WEBROOT/cgi-bin:*:exec.sh:GET,POST
-CONF_EOF
-
-        echo "WebUI server started on http://127.0.0.1:$PORT"
-        return 0
+        sleep 1
+        # Verify httpd actually started
+        if kill -0 "$pid" 2>/dev/null; then
+            echo "$pid" > "$PIDFILE"
+            log "Server started (busybox httpd, PID $pid)"
+            echo "WebUI server started on http://127.0.0.1:$PORT"
+            return 0
+        else
+            log "ERROR: busybox httpd exited immediately, trying without -f"
+            busybox httpd -p "$PORT" -h "$WEBROOT" 2>> "$LOG" &
+            pid=$!
+            sleep 1
+            if kill -0 "$pid" 2>/dev/null; then
+                echo "$pid" > "$PIDFILE"
+                log "Server started (busybox httpd no-f, PID $pid)"
+                echo "WebUI server started on http://127.0.0.1:$PORT"
+                return 0
+            fi
+            log "ERROR: busybox httpd failed to start"
+        fi
     fi
 
     # Fallback: use a simple shell-based HTTP server with socat

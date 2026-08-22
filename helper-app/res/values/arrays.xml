@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="governors">
+        <item>performance</item>
+        <item>schedutil</item>
+        <item>interactive</item>
+        <item>conservative</item>
+        <item>powersave</item>
+        <item>ondemand</item>
+    </string-array>
+
+    <string-array name="gpu_governors">
+        <item>performance</item>
+        <item>msm-adreno-tz</item>
+        <item>simple_ondemand</item>
+        <item>powersave</item>
+    </string-array>
+
+    <string-array name="io_schedulers">
+        <item>bfq</item>
+        <item>mq-deadline</item>
+        <item>none</item>
+        <item>cfq</item>
+        <item>sio</item>
+    </string-array>
+
+    <string-array name="tcp_congestions">
+        <item>bbr</item>
+        <item>bbr2</item>
+        <item>cubic</item>
+        <item>vegas</item>
+        <item>westwood</item>
+    </string-array>
+
+    <string-array name="qdiscs">
+        <item>fq</item>
+        <item>fq_codel</item>
+        <item>cake</item>
+    </string-array>
+
+    <string-array name="fastopen_values">
+        <item>3 — Client + Server</item>
+        <item>2 — Client only</item>
+        <item>1 — Server only</item>
+        <item>0 — Disabled</item>
+    </string-array>
+
+    <string-array name="thermal_modes">
+        <item>performance</item>
+        <item>balanced</item>
+        <item>cool</item>
+    </string-array>
+
+    <string-array name="renderers">
+        <item>skiagl</item>
+        <item>skiavk</item>
+    </string-array>
+
+    <string-array name="anim_scales">
+        <item>0.5</item>
+        <item>0.75</item>
+        <item>1.0</item>
+    </string-array>
+</resources>

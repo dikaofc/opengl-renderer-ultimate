@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ORE Settings</string>
+    <string name="settings_title">OpenGL Renderer Ultimate</string>
+    <string name="apply_all">Apply All</string>
+    <string name="save_config">Save Config</string>
+    <string name="reboot">Reboot</string>
+    <string name="reset_defaults">Reset Defaults</string>
+
+    <!-- CPU -->
+    <string name="cpu_config">CPU Configuration</string>
+    <string name="cpu_governor">CPU Governor</string>
+    <string name="cpu_max_freq">Max Frequency (kHz)</string>
+    <string name="cpu_min_freq">Min Frequency (kHz)</string>
+    <string name="governor_lock">Lock Governor</string>
+    <string name="input_boost">Input Boost Freq (0=off)</string>
+    <string name="boost_duration">Boost Duration (ms)</string>
+
+    <!-- GPU -->
+    <string name="gpu_config">GPU Configuration</string>
+    <string name="gpu_governor">GPU Governor</string>
+    <string name="gpu_overclock">GPU Overclock</string>
+    <string name="gpu_max_freq">Max GPU Freq (Hz)</string>
+    <string name="adreno_force_clk">Force Clock On</string>
+    <string name="adreno_force_bus">Force Bus On</string>
+    <string name="adreno_idle">Idle Timer (ms)</string>
+
+    <!-- RAM -->
+    <string name="ram_config">RAM &amp; Memory</string>
+    <string name="swappiness">Swappiness (0-200)</string>
+    <string name="dirty_ratio">Dirty Ratio (%)</string>
+    <string name="dirty_bg">Dirty Background (%)</string>
+    <string name="vfs_cache">VFS Cache Pressure</string>
+    <string name="min_free">Min Free KBytes</string>
+    <string name="io_scheduler">I/O Scheduler</string>
+    <string name="readahead">Readahead (KB)</string>
+    <string name="zram_size">ZRAM Size (0=auto)</string>
+
+    <!-- Network -->
+    <string name="network_config">Network Configuration</string>
+    <string name="tcp_congestion">TCP Congestion</string>
+    <string name="qdisc">Queue Discipline</string>
+    <string name="tcp_fastopen">TCP FastOpen</string>
+    <string name="mtu_probe">MTU Probing</string>
+    <string name="somaxconn">Somaxconn</string>
+
+    <!-- Thermal -->
+    <string name="thermal_config">Thermal Management</string>
+    <string name="thermal_mode">Thermal Mode</string>
+    <string name="cpu_throttle">CPU Throttle (mC)</string>
+    <string name="gpu_throttle">GPU Throttle (mC)</string>
+    <string name="polling">Polling Interval (ms)</string>
+
+    <!-- OpenGL -->
+    <string name="opengl_config">OpenGL Renderer</string>
+    <string name="hwui_renderer">HWUI Renderer</string>
+    <string name="renderengine">RenderEngine</string>
+    <string name="hwui_cpu_time">CPU Time Budget (%)</string>
+    <string name="tex_cache">Texture Cache (MB)</string>
+    <string name="layer_cache">Layer Cache (MB)</string>
+    <string name="frame_pacing">Frame Pacing</string>
+    <string name="multi_thread">Multi-threaded Pipeline</string>
+
+    <!-- Animation -->
+    <string name="anim_config">Animation Scale</string>
+    <string name="window_anim">Window Animation</string>
+    <string name="transition_anim">Transition Animation</string>
+    <string name="animator_dur">Animator Duration</string>
+
+    <!-- Kernel -->
+    <string name="kernel_config">Kernel Settings</string>
+    <string name="sched_autogroup">Sched Autogroup</string>
+    <string name="sched_child">Child Runs First</string>
+    <string name="fsync">Fsync</string>
+    <string name="bpf_jit">BPF JIT</string>
+    <string name="sysrq">SysRq</string>
+</resources>
