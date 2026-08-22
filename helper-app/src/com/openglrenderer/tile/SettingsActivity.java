@@ -1,12 +1,11 @@
 package com.openglrenderer.tile;
 
 import android.app.Activity;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.StrictMode;
 import android.view.View;
-import android.view.WindowInsets;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
@@ -70,28 +69,12 @@ public class SettingsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        // Edge-to-edge support for Android 15+ (API 35+)
-        setupEdgeToEdge();
+        StrictMode.ThreadPolicy.Builder builder = new StrictMode.ThreadPolicy.Builder();
+        StrictMode.setThreadPolicy(builder.permitAll().build());
 
         bindViews();
         setupButtons();
         loadConfig();
-    }
-
-    private void setupEdgeToEdge() {
-        // Only apply edge-to-edge on Android 11+ (API 30+)
-        if (Build.VERSION.SDK_INT >= 30) {
-            final View contentView = findViewById(android.R.id.content);
-            getWindow().getDecorView().setOnApplyWindowInsetsListener((v, insets) -> {
-                android.graphics.Insets systemBars = insets.getSystemWindowInsets();
-                int top = systemBars != null ? systemBars.top : 0;
-                int bottom = systemBars != null ? systemBars.bottom : 0;
-                int left = systemBars != null ? systemBars.left : 0;
-                int right = systemBars != null ? systemBars.right : 0;
-                contentView.setPadding(left, top, right, bottom);
-                return insets;
-            });
-        }
     }
 
     private void bindViews() {
