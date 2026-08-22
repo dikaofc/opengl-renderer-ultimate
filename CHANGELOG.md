@@ -1,30 +1,167 @@
 # Changelog
 
-## v3.1.0 (2026-08-22)
+All notable changes to OpenGL Renderer Ultimate will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+---
+
+## [v3.1.0] - 2026-08-22
 
 ### Added
-- GitHub Actions CI auto-build flashable ZIP on push
-- GitHub Actions auto-create release when tag is pushed
-- CONTRIBUTING.md development setup guide
-- Auto-update support via `update.json` for KernelSU notifications
-- `update.json` for KernelSU module update mechanism
+- GitHub Actions CI — auto-build flashable ZIP on every push to main
+- GitHub Actions CI — auto-create GitHub Release when tag is pushed
+- `update.json` for KernelSU auto-update notifications
+- `CHANGELOG.md` with comprehensive version history
+- `CONTRIBUTING.md` with development setup guide
+- `check_update.sh` — manual update checker script
+- Auto-update support via `update.json` for KernelSU module notifications
+- CI now attaches `update.json` to GitHub Releases
 
 ### Fixed
-- CI workflow tags trigger for auto-release
+- CI workflow tags trigger for auto-release on tag push
 
-## v3.0.0 (2026-08-22)
+### Changed
+- Module version bumped to v3.1.0 (versionCode 310)
 
-### Features
-- 12-tab WebUI control panel (Home, CPU, GPU, RAM, Kernel, Network, Thermal, OC, OpenGL, Profiles, Benchmark, Game Mode, Auto-Detect)
-- Auto GPU vendor detection (Adreno, Mali, PowerVR, Xclipse)
-- CPU/GPU/RAM/IO benchmark with before/after comparison
-- Hardware auto-detect with optimal profile recommendation (Flagship/High-End/Mid-Range/Low-End)
-- 26+ game presets with custom game add/scan
-- Profile backup/restore with export/import
-- Anti-relog persistent properties
-- Neo-Brutalism + Retro UI theme with SVG icons
-- Flashable ZIP for KernelSU/Magisk/APatch
-- Home Dashboard with device status at a glance
-- Game Mode with genre presets and app scanner
-- Manual game add with custom package name
+---
+
+## [v3.0.0] - 2026-08-22
+
+### Added
+
+#### WebUI (12 Tabs)
+- **Home Dashboard** — Device status at a glance (CPU, GPU, RAM, Battery, Thermal, Network)
+- **CPU** — Governor, frequency limits, boost, scheduler tuning
+- **GPU** — Vendor-specific (Adreno/Mali/Xclipse), overclock, force clk/bus/rail
+- **RAM** — Swappiness, ZRAM, KSM, I/O scheduler, THP, zswap
+- **Kernel** — Scheduler, sysctl, security, BPF JIT, ptrace
+- **Network** — TCP BBR/Cubic, buffers, FastOpen, WiFi power save
+- **Thermal** — Performance/Balanced/Cool modes, throttle temps
+- **Overclock** — CPU+GPU+Bus+I/O max performance, one-tap
+- **OpenGL** — HWUI renderer, RenderEngine, cache sizes, animation speed
+- **Profiles** — Backup/restore, export/import, auto-apply on boot
+- **Benchmark** — CPU/RAM/GPU/IO tests with before/after comparison
+- **Game Mode** — 26+ game presets, custom game add, app scanner
+
+#### Shell Scripts (13)
+- `apply_cpu.sh` — CPU governor, frequency, scheduler, thermal
+- `apply_gpu.sh` — GPU vendor-specific (Adreno KGSL, Mali devfreq, Xclipse)
+- `apply_ram.sh` — RAM, ZRAM, KSM, I/O, THP, zswap, readahead
+- `apply_kernel.sh` — Kernel sysctl, scheduler, security
+- `apply_network.sh` — TCP congestion, buffers, FastOpen, WiFi
+- `apply_thermal.sh` — Thermal zones, throttling control
+- `apply_overclock.sh` — Max CPU+GPU+Bus+I/O performance
+- `apply_profile.sh` — Profile save/load/delete/rename/duplicate/export/import
+- `apply_gamemode.sh` — Game presets, genre optimization, app scanner
+- `benchmark.sh` — CPU/RAM/GPU/IO benchmarks with comparison
+- `auto_detect.sh` — Hardware detection + optimal profile recommendation
+- `dashboard.sh` — System status JSON for WebUI dashboard
+- `functions.sh` — Shared helpers (log, sp, detect, config)
+
+#### Game Mode
+- 6 genre presets (Battle Royale, MOBA, Open World, FPS, Racing, Casual)
+- 26+ named game presets (PUBG, MLBB, Genshin, Free Fire, COD, etc.)
+- Custom game add with package name + genre selection
 - Scan all installed apps and select which to optimize
+- Auto-detect running game and apply genre preset
+- Game Mode OFF — revert all settings to defaults
+
+#### Profiles
+- Save current settings as named profile
+- Load/apply any saved profile
+- Delete/Rename/Duplicate profiles
+- Export profiles to `/sdcard/OpenGLProfiles/` as `.tar.gz`
+- Import profiles from `.tar.gz` files
+- Auto-apply profile on boot
+- Full system state snapshot per profile (CPU, GPU, RAM, Net, Thermal)
+
+#### Benchmark
+- CPU benchmark (integer, float, process creation)
+- RAM benchmark (write/read bandwidth, allocation latency)
+- I/O benchmark (sequential, random 4K)
+- GPU benchmark (clock speed, sysfs read)
+- Before/after comparison with percentage diff
+- Color-coded result cards
+
+#### Auto-Detect
+- Hardware scan (device, SoC, CPU, GPU, RAM, thermal, kernel, storage)
+- Smart profile recommendation (Flagship/High-End/Mid-Range/Low-End)
+- One-click apply optimal settings
+- Custom ROM detection (LineageOS, crDroid, PixelExperience, etc.)
+
+#### Anti-Relog
+- Persistent properties via `/data/local.prop`
+- Config saved to `/data/local/opengl_renderer/config.conf`
+- Properties survive reboots
+
+#### UI/UX
+- Neo-Brutalism + Retro theme (bold borders, hard shadows, bright colors)
+- Dark cream background (#f5f0e8) with yellow/teal/pink accents
+- Space Grotesk bold typography
+- SVG icons (no emoji hardcodes)
+- Responsive design (mobile-first)
+- Toggle switches, range sliders, dropdowns
+- Live status bar with success/error/warning states
+
+#### Infrastructure
+- Flashable ZIP for KernelSU/Magisk/APatch
+- `META-INF/` installer with `update-binary` and `updater-script`
+- `customize.sh` installer (permissions, dirs, config)
+- `post-fs-data.sh` (early boot optimizations)
+- `service.sh` (late boot optimizations)
+- `uninstall.sh` (cleanup on removal)
+- `module.prop` with module metadata
+
+### Performance
+- Skia OpenGL renderer forced for HWUI
+- RenderEngine forced to Skia GL backend
+- All debug/tracing disabled (Skia, ATrace, Perfetto)
+- HWUI hint manager enabled with 25ms CPU budget
+- Texture cache 96MB, Layer cache 48MB
+- Frame pacing enabled
+- Multi-threaded HWUI pipeline
+- Animation scale 0.5x (iOS-like smoothness)
+- SurfaceFlinger triple buffering
+- VSync phase offset reduced to 1ms
+- UBWC/AFBC enabled for bandwidth compression
+- BBR congestion control with FQ queue discipline
+- TCP FastOpen, MTU probing, large buffers
+- WiFi power save disabled in game mode
+- BFQ I/O scheduler with 256 requests
+- KSM enabled for memory deduplication
+- Zswap with LZ4 compression
+- Transparent Huge Pages (madvise mode)
+
+---
+
+## [Unreleased]
+
+### Planned
+- Custom rule engine for per-app settings
+- Battery temperature warning and auto-throttle
+- More game presets (2025-2026 titles)
+- Localization (Indonesian, Chinese, Korean)
+- Dark/Light theme toggle
+- Widget for quick settings tile
+- Tasker/Automate integration
+
+---
+
+## Version History
+
+| Version | Date | Changes |
+|---------|------|---------|
+| v3.1.0 | 2026-08-22 | CI auto-build, auto-release, update.json, CONTRIBUTING.md |
+| v3.0.0 | 2026-08-22 | Full rewrite: 12-tab WebUI, Game Mode, Profiles, Benchmark, Auto-Detect |
+| v1.0.0 | - | Initial release: Basic OpenGL renderer properties |
+
+---
+
+## Links
+
+- **Repository**: https://github.com/dikaofc/opengl-renderer-ultimate
+- **Releases**: https://github.com/dikaofc/opengl-renderer-ultimate/releases
+- **Issues**: https://github.com/dikaofc/opengl-renderer-ultimate/issues
+- **Discussions**: https://github.com/dikaofc/opengl-renderer-ultimate/discussions
