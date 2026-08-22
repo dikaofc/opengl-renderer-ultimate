@@ -35,10 +35,9 @@ done
 if [ -n "$ZRAM_DEV" ]; then
     log "apply_ram: ZRAM found at $ZRAM_DEV"
 
-    # ZRAM size — set to 50% of RAM or configurable
+    # ZRAM size — set to configurable value
     zram_size="$(conf_get zram_size "")"
     if [ -n "$zram_size" ]; then
-        # Reset ZRAM
         echo 1 > /sys/block/zram0/reset 2>/dev/null
         sleep 1
         echo "$zram_size" > /sys/block/zram0/disksize 2>/dev/null

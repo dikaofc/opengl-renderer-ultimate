@@ -1,11 +1,14 @@
 package com.openglrenderer.tile;
 
 import android.app.Activity;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.StrictMode;
 import android.view.View;
+import android.view.WindowInsets;
+import android.view.WindowInsetsAnimation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
@@ -69,12 +72,30 @@ public class SettingsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        StrictMode.ThreadPolicy.Builder builder = new StrictMode.ThreadPolicy.Builder();
-        StrictMode.setThreadPolicy(builder.permitAll().build());
+        // Edge-to-edge support for Android 15+ (API 35+)
+        setupEdgeToEdge();
 
         bindViews();
         setupButtons();
         loadConfig();
+    }
+
+    private void setupEdgeToEdge() {
+        // For Android 15+ we must handle insets to avoid content under system bars
+        final View decorView = getWindow().getDecorView();
+        final View contentView = findViewById(android.R.id.content);
+
+        // Use WindowInsetsCompat-style API via the older WindowInsets for backward compat
+        decorView.setOnApplyWindowInsetsListener((v, insets) -> {
+            android.graphics.Insets systemBars = insets.getSystemWindowInsets();
+            int top = systemBars != null ? systemBars.top : 0;
+            int bottom = systemBars != null ? systemBars.bottom : 0;
+            int left = systemBars != null ? systemBars.left : 0;
+            int right = systemBars != null ? systemBars.right : 0;
+            // Apply padding to the scroll view so content is not behind system bars
+            contentView.setPadding(left, top, right, bottom);
+            return insets;
+        });
     }
 
     private void bindViews() {

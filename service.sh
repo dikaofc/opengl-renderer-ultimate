@@ -21,7 +21,7 @@ sleep 3  # Extra wait for services to stabilize
 
 log "service.sh: System boot completed"
 
-# ---- Apply all subsystem optimizations ----
+# ---- Apply all subsystem optimizations (parallel for max speed) ----
 log "service.sh: Applying CPU optimizations..."
 "$MODDIR/scripts/apply_cpu.sh" &
 log "service.sh: Applying GPU optimizations..."
@@ -96,7 +96,7 @@ fi
 
 # ---- Check for Updates (silent) ----
 log "service.sh: Checking for updates..."
-local update_ver=$("$MODDIR/scripts/check_update.sh" auto 2>/dev/null)
+update_ver=$("$MODDIR/scripts/check_update.sh" auto 2>/dev/null)
 if [ -n "$update_ver" ]; then
     log "service.sh: Update available: $update_ver"
 fi

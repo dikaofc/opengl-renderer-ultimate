@@ -52,7 +52,7 @@ write_sys "/proc/sys/kernel/panic_on_oops" "$(conf_get panic_on_oops 1)"
 write_sys "/proc/sys/kernel/panic" "$(conf_get kernel_panic 10)"
 
 # ---- Printk ----
-write_sys "/proc/sys/kernel/printk" "$(conf_get printk 1 4 1 7)"
+write_sys "/proc/sys/kernel/printk" "$(conf_get printk '1 4 1 7')"
 
 # ---- Domain ----
 write_sys "/proc/sys/kernel/domainname" "$(conf_get domainname localdomain)"

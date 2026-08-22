@@ -71,14 +71,13 @@ done
 write_sys "/sys/devices/system/cpu/core_ctl/enable" "$(conf_get core_ctl_enable 0)"
 
 # ---- Temperature Mitigation ----
+# Raise trip points for max performance headroom
 for tz in /sys/class/thermal/thermal_zone*; do
     [ -d "$tz" ] || continue
-    # Set trip point temps higher for more thermal headroom
     for tp in "$tz"/trip_point_*_temp; do
         [ -f "$tp" ] || continue
         cur="$(cat "$tp" 2>/dev/null)"
         if [ -n "$cur" ] && [ "$cur" -gt 0 ] 2>/dev/null; then
-            # Raise trip points by 5000 millicelsius for more headroom
             new=$((cur + 5000))
             write_sys "$tp" "$new"
         fi

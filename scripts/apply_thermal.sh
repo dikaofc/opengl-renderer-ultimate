@@ -9,9 +9,8 @@ MODDIR="${0%/*}/.."
 log "apply_thermal: Starting thermal management"
 
 # ---- Thermal Zone Trip Points ----
-# Raise thermal trip points for more performance headroom
-# This allows the CPU/GPU to run hotter before throttling
-thermal_headroom="$(conf_get thermal_headroom 5000)"
+# Raise thermal trip points for maximum performance headroom
+thermal_headroom="$(conf_get thermal_headroom 10000)"
 
 for tz in /sys/class/thermal/thermal_zone*; do
     [ -d "$tz" ] || continue
@@ -34,12 +33,13 @@ for tz in /sys/class/thermal/thermal_zone*; do
 done
 
 # ---- Thermal Engine Policy ----
-# Disable thermal engine if custom ROM allows
+# MAX PERFORMANCE — disable thermal engine completely
 thermal_mode="$(conf_get thermal_mode performance)"
 
 case "$thermal_mode" in
     performance)
-        # Maximum performance — higher thresholds
+        # Disable all thermal zones for maximum performance
+        log "apply_thermal: Performance mode — disabling all thermal zones"
         for tz in /sys/class/thermal/thermal_zone*; do
             [ -d "$tz" ] || continue
             write_sys "$tz/mode" "disabled" 2>/dev/null
@@ -47,6 +47,7 @@ case "$thermal_mode" in
         ;;
     balanced)
         # Keep default thermal behavior
+        log "apply_thermal: Balanced mode — keeping defaults"
         ;;
     cool)
         # More aggressive cooling
@@ -62,8 +63,8 @@ write_sys "/sys/class/power_supply/battery/charging_control" "$(conf_get chargin
 
 # ---- Thermal Mitigation ----
 # CPU throttle temperatures
-CPU_THROTTLE="$(conf_get cpu_throttle_temp 85000)"
-GPU_THROTTLE="$(conf_get gpu_throttle_temp 85000)"
+CPU_THROTTLE="$(conf_get cpu_throttle_temp 98000)"
+GPU_THROTTLE="$(conf_get gpu_throttle_temp 98000)"
 
 # Find and configure CPU thermal
 for tz in /sys/class/thermal/thermal_zone*; do

