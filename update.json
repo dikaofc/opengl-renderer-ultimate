@@ -1,7 +1,7 @@
 {
-  "version": "v3.2.3",
-  "versionCode": 323,
-  "zipUrl": "https://github.com/dikaofc/opengl-renderer-ultimate/releases/download/v3.2.3/OpenGL_Renderer_Ultimate_v3.2.3_Flashable.zip",
+  "version": "v3.2.4",
+  "versionCode": 324,
+  "zipUrl": "https://github.com/dikaofc/opengl-renderer-ultimate/releases/download/v3.2.4/OpenGL_Renderer_Ultimate_v3.2.4_Flashable.zip",
   "changelog": "https://raw.githubusercontent.com/dikaofc/opengl-renderer-ultimate/main/CHANGELOG.md",
-  "note": "OpenGL Renderer Ultimate v3.2.3 — Fixed WebUI data loading + KernelSU auto-update support"
+  "note": "OpenGL Renderer Ultimate v3.2.4 — iOS-style UI + Universal root manager support"
 }
