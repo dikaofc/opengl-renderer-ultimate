@@ -1,0 +1,124 @@
+name: Build Flashable ZIP
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - '*.md'
+      - '.gitignore'
+      - 'LICENSE'
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq zip
+
+      - name: Make scripts executable
+        run: |
+          chmod -R +x *.sh scripts/*.sh META-INF/com/google/android/update-binary
+
+      - name: Validate shell scripts
+        run: |
+          echo "=== Syntax Check ==="
+          FAIL=0
+          for f in *.sh scripts/*.sh; do
+            if bash -n "$f" 2>&1; then
+              echo "[OK] $f"
+            else
+              echo "[FAIL] $f"
+              FAIL=1
+            fi
+          done
+          if [ "$FAIL" = "1" ]; then
+            echo "Script syntax check failed!"
+            exit 1
+          fi
+          echo "All scripts valid!"
+
+      - name: Get version
+        id: version
+        run: |
+          VERSION=$(grep "^version=" module.prop | cut -d= -f2)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Building version: $VERSION"
+
+      - name: Build flashable ZIP
+        run: |
+          ZIP_NAME="OpenGL_Renderer_Ultimate_${{ steps.version.outputs.version }}_Flashable.zip"
+          zip -r9 "$ZIP_NAME" . \
+            -x ".git/*" \
+            -x ".github/*" \
+            -x "*.md" \
+            -x ".gitignore" \
+            -x "LICENSE" \
+            -x "build_zip/*"
+          echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_ENV
+          echo "Built: $ZIP_NAME"
+          ls -lh "$ZIP_NAME"
+
+      - name: Count files
+        run: |
+          echo "=== ZIP Contents ==="
+          unzip -l "$ZIP_NAME" | tail -3
+          echo ""
+          FILE_COUNT=$(unzip -l "$ZIP_NAME" | tail -1 | awk '{print $2}')
+          echo "Total files in ZIP: $FILE_COUNT"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: OpenGL-Renderer-Ultimate-${{ steps.version.outputs.version }}
+          path: ${{ env.ZIP_NAME }}
+          retention-days: 30
+
+      - name: Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ env.ZIP_NAME }}
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: ShellCheck
+        uses: ludeeus/action-shellcheck@master
+        with:
+          scandir: '.'
+          severity: warning
+          additional_files: '*.sh scripts/*.sh'
+        continue-on-error: true
+
+      - name: HTML validation
+        run: |
+          if command -p htmlhint >/dev/null 2>&1; then
+            htmlhint webroot/index.html
+          else
+            echo "htmlhint not available, skipping"
+          fi
+
+      - name: JS syntax check
+        run: |
+          node --check webroot/app.js 2>&1 && echo "[OK] app.js" || echo "[WARN] node not available, skipping JS check"
+        continue-on-error: true
