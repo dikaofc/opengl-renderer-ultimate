@@ -1,7 +1,7 @@
 {
-  "version": "v3.1.0",
-  "versionCode": 310,
-  "zipUrl": "https://github.com/dikaofc/opengl-renderer-ultimate/releases/download/v3.1.0/OpenGL_Renderer_Ultimate_v3.1.0_Flashable.zip",
+  "version": "v3.2.0",
+  "versionCode": 320,
+  "zipUrl": "https://github.com/dikaofc/opengl-renderer-ultimate/releases/download/v3.2.0/OpenGL_Renderer_Ultimate_v3.2.0_Flashable.zip",
   "changelog": "https://raw.githubusercontent.com/dikaofc/opengl-renderer-ultimate/main/CHANGELOG.md",
-  "note": "OpenGL Renderer Ultimate v3.1.0 — CI auto-release with flashable ZIP"
+  "note": "OpenGL Renderer Ultimate v3.2.0"
 }
