@@ -440,8 +440,12 @@ public class SettingsActivity extends Activity {
 
     private void rebootDevice() {
         exec.execute(() -> {
-            execRoot("svc power reboot");
-            mainHandler.post(() -> Toast.makeText(this, "Rebooting...", Toast.LENGTH_SHORT).show());
+            try {
+                execRoot("svc power reboot");
+                mainHandler.post(() -> Toast.makeText(this, "Rebooting...", Toast.LENGTH_SHORT).show());
+            } catch (Exception e) {
+                mainHandler.post(() -> Toast.makeText(this, "Reboot failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+            }
         });
     }
 
