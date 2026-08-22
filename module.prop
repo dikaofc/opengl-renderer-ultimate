@@ -1,7 +1,7 @@
 id=opengl_renderer_ultimate
 name=OpenGL Renderer Ultimate
-version=v3.2.11
-versionCode=3311
+version=v3.2.12
+versionCode=3312
 author=DikaCode
 banner=/system/banner.png
 updateJson=https://raw.githubusercontent.com/dikaofc/opengl-renderer-ultimate/main/update.json

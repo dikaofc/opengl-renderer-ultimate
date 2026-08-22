@@ -1,7 +1,7 @@
 {
-  "version": "v3.2.11",
-  "versionCode": 3211,
-  "zipUrl": "https://github.com/dikaofc/opengl-renderer-ultimate/releases/download/v3.2.11/OpenGL_Renderer_Ultimate_v3.2.11_Flashable.zip",
+  "version": "v3.2.12",
+  "versionCode": 3312,
+  "zipUrl": "https://github.com/dikaofc/opengl-renderer-ultimate/releases/download/v3.2.12/OpenGL_Renderer_Ultimate_v3.2.12_Flashable.zip",
   "changelog": "https://raw.githubusercontent.com/dikaofc/opengl-renderer-ultimate/main/CHANGELOG.md",
-  "note": "OpenGL Renderer Ultimate v3.2.11 — crash fixes + max performance defaults"
+  "note": "OpenGL Renderer Ultimate v3.2.12 — crash fixes + max performance defaults"
 }
