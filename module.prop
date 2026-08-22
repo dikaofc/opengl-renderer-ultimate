@@ -4,4 +4,5 @@ version=v3.2.2
 versionCode=322
 author=DikaCode
 banner=/system/banner.png
+updateJson=https://raw.githubusercontent.com/dikaofc/opengl-renderer-ultimate/main/update.json
 description=Ultimate GPU/CPU/RAM/Kernel tuner with WebUI — max performance, iOS-like smoothness, no limits
