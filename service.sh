@@ -66,6 +66,17 @@ esac
 log "service.sh: Writing persistent props..."
 write_persistent_props
 
+# ---- Start Game Mode Daemon ----
+log "service.sh: Starting Game Mode daemon..."
+"$MODDIR/scripts/gamemode_daemon.sh" start >/dev/null 2>&1 &
+
+# ---- Check for Updates (silent) ----
+log "service.sh: Checking for updates..."
+local update_ver=$("$MODDIR/scripts/check_update.sh" auto 2>/dev/null)
+if [ -n "$update_ver" ]; then
+    log "service.sh: Update available: $update_ver"
+fi
+
 # ---- Final verification ----
 log "service.sh: Final verification..."
 verify_props

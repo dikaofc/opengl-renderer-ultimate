@@ -136,6 +136,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [v3.2.0] - 2026-08-22
+
+### Added
+- **Game Mode Daemon** — auto-detect foreground game and apply preset automatically
+  - Monitors foreground app every 3 seconds
+  - Auto-applies genre preset when game detected
+  - Auto-reverts when game is closed
+  - Start/stop/status controls in WebUI
+- **Quick Toggle** — toggle game mode on/off from terminal
+  - `quick_toggle.sh` — toggle, on, off, status
+- **Manual Update Checker** — `check_update.sh` with 3 modes
+  - Default: check and display update info
+  - Force: download ZIP and show install instructions
+  - Auto: silent check for scripting
+- Daemon auto-starts on boot via `service.sh`
+- Auto-update check on boot (silent)
+- WebUI daemon controls (start/stop/status)
+
+### Changed
+- `service.sh` now starts game mode daemon on boot
+- `service.sh` now checks for updates on boot (silent)
+
+---
+
 ## [Unreleased]
 
 ### Planned

@@ -943,6 +943,24 @@ async function applyGamePreset(pkg, name, genre) {
     setStatus(`Game Mode activated for ${name}!`, 'success');
 }
 
+async function daemonToggle(action) {
+    const statusEl = document.getElementById('daemon-status');
+    if (action === 'start') {
+        setStatus('Starting daemon...', 'warning');
+        const r = await shell(`${MODDIR}/scripts/gamemode_daemon.sh start 2>/dev/null`);
+        statusEl.textContent = r.trim();
+        setStatus('Daemon started!', 'success');
+    } else if (action === 'stop') {
+        setStatus('Stopping daemon...', 'warning');
+        const r = await shell(`${MODDIR}/scripts/gamemode_daemon.sh stop 2>/dev/null`);
+        statusEl.textContent = r.trim();
+        setStatus('Daemon stopped!', 'success');
+    } else {
+        const r = await shell(`${MODDIR}/scripts/gamemode_daemon.sh status 2>/dev/null`);
+        statusEl.textContent = r.trim();
+    }
+}
+
 function applyGameGenre(genre) {
     const settings = GENRE_SETTINGS[genre];
     if (!settings) return;
