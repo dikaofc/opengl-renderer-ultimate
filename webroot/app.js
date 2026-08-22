@@ -1487,7 +1487,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderGameList();
     loadCustomGames();
     checkServerStatus();
-    setStatus('Ready \u2014 OpenGL Renderer Ultimate v3.2.10');
+    setStatus('Ready \u2014 OpenGL Renderer Ultimate v3.2.11');
 
     // Auto-refresh dashboard every 10 seconds (realtime)
     const refreshInterval = setInterval(() => {
