@@ -6,26 +6,42 @@
 
 umask 022
 
-# echo before loading util_functions
+# ui_print before loading util_functions
 ui_print() { echo "$1"; }
 
-require_new_magisk() {
-  ui_print "*******************************"
-  ui_print " Please install Magisk v20.4+! "
-  ui_print "*******************************"
-  exit 1
-}
-
 #########################
-# Load util_functions.sh
+# Detect Root Manager
 #########################
 
 OUTFD=$2
 ZIPFILE=$3
 
-[ -f /data/adb/magisk/util_functions.sh ] || require_new_magisk
-. /data/adb/magisk/util_functions.sh
-[ $MAGISK_VER_CODE -lt 20400 ] && require_new_magisk
+# Magisk / Kitsune Magisk / MMRL
+if [ -f /data/adb/magisk/util_functions.sh ]; then
+    . /data/adb/magisk/util_functions.sh
+    if [ "$MAGISK_VER_CODE" -lt 20400 ]; then
+        ui_print "*******************************"
+        ui_print "  Requires Magisk v20.4+ !     "
+        ui_print "*******************************"
+        exit 1
+    fi
+    install_module
+    exit 0
+fi
 
-install_module
-exit 0
+# KernelSU / SukiSU / APatch (use customize.sh directly)
+if [ -f /data/adb/ksu/bin/ksud ] || [ -f /data/adb/ap/bin/apd ]; then
+    # These managers call customize.sh directly, but provide a fallback
+    MODDIR="${0%/*}"
+    if [ -f "$MODDIR/customize.sh" ]; then
+        . "$MODDIR/customize.sh"
+        exit $?
+    fi
+fi
+
+# Fallback: try to install manually
+ui_print "*******************************************"
+ui_print "  Unsupported root manager!               "
+ui_print "  Please install via Magisk/KernelSU/etc  "
+ui_print "*******************************************"
+exit 1

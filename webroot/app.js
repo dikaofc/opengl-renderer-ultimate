@@ -33,14 +33,66 @@ function shell(cmd) {
 }
 
 // ---- Tab Navigation ----
-document.querySelectorAll('.tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        tab.classList.add('active');
-        const target = document.getElementById(`tab-${tab.dataset.tab}`);
-        if (target) target.classList.add('active');
-    });
+// ---- Tab Navigation (Bottom Nav + Sheet) ----
+const NAV_LABELS = {
+    home: 'Dashboard', cpu: 'CPU', gpu: 'GPU', ram: 'RAM',
+    kernel: 'Kernel', network: 'Network', thermal: 'Thermal',
+    overclock: 'Overclock', opengl: 'OpenGL', profiles: 'Profiles',
+    benchmark: 'Benchmark', detect: 'Detect', game: 'Game Mode'
+};
+
+function switchTab(tabName) {
+    document.querySelectorAll('.bottom-nav-item').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+    const navBtn = document.querySelector(`.bottom-nav-item[data-tab="${tabName}"]`);
+    if (navBtn) navBtn.classList.add('active');
+
+    const target = document.getElementById(`tab-${tabName}`);
+    if (target) target.classList.add('active');
+
+    document.getElementById('header-subtitle').textContent = NAV_LABELS[tabName] || tabName;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function openTab(tabName) {
+    closeSheet();
+    setTimeout(() => switchTab(tabName), 200);
+}
+
+function openSheet(name) {
+    const overlay = document.getElementById('sheet-overlay');
+    const sheet = document.getElementById(`sheet-${name}`);
+    if (!sheet) return;
+    overlay.classList.add('active');
+    sheet.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeSheet() {
+    document.getElementById('sheet-overlay').classList.remove('active');
+    document.querySelectorAll('.sheet').forEach(s => s.classList.remove('active'));
+    document.body.style.overflow = '';
+}
+
+// Bottom nav click
+document.querySelectorAll('.bottom-nav-item[data-tab]').forEach(btn => {
+    btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+});
+
+// Sheet trigger buttons
+document.querySelectorAll('.bottom-nav-item[data-sheet]').forEach(btn => {
+    btn.addEventListener('click', () => openSheet(btn.dataset.sheet));
+});
+
+// Swipe down to close sheet
+let sheetStartY = 0;
+document.querySelectorAll('.sheet').forEach(sheet => {
+    sheet.addEventListener('touchstart', e => { sheetStartY = e.touches[0].clientY; }, { passive: true });
+    sheet.addEventListener('touchend', e => {
+        const diff = e.changedTouches[0].clientY - sheetStartY;
+        if (diff > 80) closeSheet();
+    }, { passive: true });
 });
 
 // ---- Range Slider Live Values ----
