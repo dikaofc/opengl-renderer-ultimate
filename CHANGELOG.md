@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [v3.2.6] - 2026-08-22
+
+### Added
+- **WebUI server toggle** — `webui_server.sh toggle` to start/stop server from any terminal
+- **`webui_toggle.sh`** — quick toggle script for Termux shortcuts
+- Dashboard shows WebUI server status and URL
+- `is-running` command for script integration
+
+---
+
 ## [v3.2.5] - 2026-08-22
 
 ### Added
@@ -223,6 +233,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 | Version | Date | Changes |
 |---------|------|---------|
+| v3.2.6 | 2026-08-22 | WebUI server toggle + dashboard status |
 | v3.2.5 | 2026-08-22 | Universal WebUI server for all root managers |
 | v3.2.4 | 2026-08-22 | iOS-style UI redesign + Universal root manager support |
 | v3.2.3 | 2026-08-22 | Fix WebUI shell exec API + KernelSU auto-update support |
