@@ -1,14 +1,12 @@
 package com.openglrenderer.tile;
 
 import android.app.Activity;
-import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.StrictMode;
 import android.view.View;
 import android.view.WindowInsets;
-import android.view.WindowInsetsAnimation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
@@ -81,21 +79,19 @@ public class SettingsActivity extends Activity {
     }
 
     private void setupEdgeToEdge() {
-        // For Android 15+ we must handle insets to avoid content under system bars
-        final View decorView = getWindow().getDecorView();
-        final View contentView = findViewById(android.R.id.content);
-
-        // Use WindowInsetsCompat-style API via the older WindowInsets for backward compat
-        decorView.setOnApplyWindowInsetsListener((v, insets) -> {
-            android.graphics.Insets systemBars = insets.getSystemWindowInsets();
-            int top = systemBars != null ? systemBars.top : 0;
-            int bottom = systemBars != null ? systemBars.bottom : 0;
-            int left = systemBars != null ? systemBars.left : 0;
-            int right = systemBars != null ? systemBars.right : 0;
-            // Apply padding to the scroll view so content is not behind system bars
-            contentView.setPadding(left, top, right, bottom);
-            return insets;
-        });
+        // Only apply edge-to-edge on Android 11+ (API 30+)
+        if (Build.VERSION.SDK_INT >= 30) {
+            final View contentView = findViewById(android.R.id.content);
+            getWindow().getDecorView().setOnApplyWindowInsetsListener((v, insets) -> {
+                android.graphics.Insets systemBars = insets.getSystemWindowInsets();
+                int top = systemBars != null ? systemBars.top : 0;
+                int bottom = systemBars != null ? systemBars.bottom : 0;
+                int left = systemBars != null ? systemBars.left : 0;
+                int right = systemBars != null ? systemBars.right : 0;
+                contentView.setPadding(left, top, right, bottom);
+                return insets;
+            });
+        }
     }
 
     private void bindViews() {
