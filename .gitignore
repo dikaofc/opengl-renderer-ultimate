@@ -1,0 +1,19 @@
+# Build artifacts
+*.zip
+build_zip/
+
+# Logs
+*.log
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Termux temp
+/tmp/

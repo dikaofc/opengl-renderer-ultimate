@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>OpenGL Renderer Ultimate</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div>
+            <h1>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                OpenGL Renderer Ultimate
+            </h1>
+            <p class="subtitle">v3.0.0 — MAX PERFORMANCE CONTROL PANEL</p>
+        </div>
+        <div class="header-actions">
+            <button id="btn-reboot" class="btn btn-danger" onclick="rebootDevice()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                Reboot
+            </button>
+        </div>
+    </header>
+
+    <!-- Status Bar -->
+    <div class="status-bar" id="status-bar">
+        <span id="status-text">Loading...</span>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="tabs">
+        <button class="tab active" data-tab="home">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span class="tab-label">Home</span>
+        </button>
+        <button class="tab" data-tab="cpu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+            <span class="tab-label">CPU</span>
+        </button>
+        <button class="tab" data-tab="gpu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4"/><path d="M14 12h4"/><path d="M8 10v4"/><path d="M16 10v4"/></svg>
+            <span class="tab-label">GPU</span>
+        </button>
+        <button class="tab" data-tab="ram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="6" y1="10" x2="6" y2="14"/><line x1="10" y1="10" x2="10" y2="14"/><line x1="14" y1="10" x2="14" y2="14"/><line x1="18" y1="10" x2="18" y2="14"/></svg>
+            <span class="tab-label">RAM</span>
+        </button>
+        <button class="tab" data-tab="kernel">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2"/><path d="M12 21v2"/><path d="M4.22 4.22l1.42 1.42"/><path d="M18.36 18.36l1.42 1.42"/><path d="M1 12h2"/><path d="M21 12h2"/><path d="M4.22 19.78l1.42-1.42"/><path d="M18.36 5.64l1.42-1.42"/></svg>
+            <span class="tab-label">Kernel</span>
+        </button>
+        <button class="tab" data-tab="network">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+            <span class="tab-label">Network</span>
+        </button>
+        <button class="tab" data-tab="thermal">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>
+            <span class="tab-label">Thermal</span>
+        </button>
+        <button class="tab" data-tab="overclock">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            <span class="tab-label">OC</span>
+        </button>
+        <button class="tab" data-tab="opengl">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+            <span class="tab-label">OpenGL</span>
+        </button>
+        <button class="tab" data-tab="profiles">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            <span class="tab-label">Profiles</span>
+        </button>
+        <button class="tab" data-tab="benchmark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            <span class="tab-label">Bench</span>
+        </button>
+        <button class="tab" data-tab="detect">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span class="tab-label">Detect</span>
+        </button>
+        <button class="tab" data-tab="game">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="11" x2="10" y2="11"/><line x1="8" y1="9" x2="8" y2="13"/><line x1="15" y1="12" x2="15.01" y2="12"/><line x1="18" y1="10" x2="18.01" y2="10"/><path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z"/></svg>
+            <span class="tab-label">Game</span>
+        </button>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="content">
+
+        <!-- ==================== HOME / DASHBOARD TAB ==================== -->
+        <section class="tab-content active" id="tab-home">
+            <div class="dash-header">
+                <h2>Dashboard</h2>
+                <button class="btn btn-sm btn-primary" onclick="loadDashboard()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> Refresh</button>
+            </div>
+
+            <div id="dash-loading" class="warning-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation:spin 1s linear infinite"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg>
+                Loading dashboard...
+            </div>
+
+            <div id="dash-content" style="display:none;">
+                <!-- Device -->
+                <div class="dash-device" id="dash-device"></div>
+                <!-- Stats Row -->
+                <div class="dash-stats" id="dash-stats"></div>
+                <!-- Module Status -->
+                <div class="dash-module" id="dash-module"></div>
+            </div>
+        </section>
+
+        <!-- ==================== CPU TAB ==================== -->
+        <section class="tab-content" id="tab-cpu">
+            <h2>CPU Configuration</h2>
+            <div class="info-grid" id="cpu-info">
+                <div class="info-card accent">
+                    <span class="label">Cores</span>
+                    <span class="value" id="cpu-cores">-</span>
+                </div>
+                <div class="info-card teal">
+                    <span class="label">Max Freq</span>
+                    <span class="value" id="cpu-max-freq">-</span>
+                </div>
+                <div class="info-card pink">
+                    <span class="label">Min Freq</span>
+                    <span class="value" id="cpu-min-freq">-</span>
+                </div>
+                <div class="info-card lime">
+                    <span class="label">Governor</span>
+                    <span class="value" id="cpu-governor">-</span>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Governor</h3>
+                <div class="control-row">
+                    <label>CPU Governor</label>
+                    <select id="cpu_governor">
+                        <option value="performance">Performance</option>
+                        <option value="schedutil">Schedutil</option>
+                        <option value="interactive">Interactive</option>
+                        <option value="conservative">Conservative</option>
+                        <option value="powersave">Power Save</option>
+                        <option value="ondemand">On Demand</option>
+                    </select>
+                </div>
+                <div class="control-row">
+                    <label>Governor Lock</label>
+                    <label class="switch"><input type="checkbox" id="governor_lock" checked><span class="slider"></span></label>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Frequency</h3>
+                <div class="control-row">
+                    <label>Max Frequency (kHz)</label>
+                    <input type="number" id="cpu_max_freq" placeholder="Auto">
+                </div>
+                <div class="control-row">
+                    <label>Min Frequency (kHz)</label>
+                    <input type="number" id="cpu_min_freq" placeholder="Auto">
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg> CPU Boost</h3>
+                <div class="control-row">
+                    <label>Input Boost Freq (0=off)</label>
+                    <input type="number" id="input_boost_freq" value="0">
+                </div>
+                <div class="control-row">
+                    <label>Boost Duration (ms)</label>
+                    <input type="number" id="input_boost_ms" value="50">
+                </div>
+                <div class="control-row">
+                    <label>Sched Boost on Input</label>
+                    <label class="switch"><input type="checkbox" id="sched_boost_on_input" checked><span class="slider"></span></label>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/></svg> Scheduler</h3>
+                <div class="control-row">
+                    <label>Sched Latency (ns)</label>
+                    <input type="number" id="sched_latency_ns" value="1000000">
+                </div>
+                <div class="control-row">
+                    <label>Min Granularity (ns)</label>
+                    <input type="number" id="sched_min_granularity_ns" value="500000">
+                </div>
+                <div class="control-row">
+                    <label>Wakeup Granularity (ns)</label>
+                    <input type="number" id="sched_wakeup_granularity_ns" value="500000">
+                </div>
+                <div class="control-row">
+                    <label>Migration Cost (ns)</label>
+                    <input type="number" id="sched_migration_cost_ns" value="100000">
+                </div>
+                <div class="control-row">
+                    <label>NR Migrate</label>
+                    <input type="number" id="sched_nr_migrate" value="4">
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== GPU TAB ==================== -->
+        <section class="tab-content" id="tab-gpu">
+            <h2>GPU Configuration</h2>
+            <div class="info-grid" id="gpu-info">
+                <div class="info-card accent"><span class="label">Vendor</span><span class="value" id="gpu-vendor">-</span></div>
+                <div class="info-card teal"><span class="label">Renderer</span><span class="value" id="gpu-renderer">-</span></div>
+                <div class="info-card pink"><span class="label">EGL HW</span><span class="value" id="gpu-egl">-</span></div>
+                <div class="info-card lime"><span class="label">Vulkan</span><span class="value" id="gpu-vulkan">-</span></div>
+            </div>
+
+            <div class="control-group">
+                <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4"/><path d="M14 12h4"/></svg> GPU Governor</h3>
+                <div class="control-row">
+                    <label>GPU Governor</label>
+                    <select id="gpu_governor">
+                        <option value="performance">Performance</option>
+                        <option value="msm-adreno-tz">Adreno TZ</option>
+                        <option value="simple_ondemand">Simple Ondemand</option>
+                        <option value="powersave">Power Save</option>
+                    </select>
+                </div>
+                <div class="control-row">
+                    <label>GPU Overclock</label>
+                    <label class="switch"><input type="checkbox" id="gpu_overclock_enabled" checked><span class="slider"></span></label>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> GPU Frequency</h3>
+                <div class="control-row">
+                    <label>Max GPU Freq (Hz)</label>
+                    <input type="number" id="gpu_freq_max" placeholder="Auto">
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4"/><path d="M14 12h4"/><path d="M8 10v4"/><path d="M16 10v4"/></svg> Adreno (Qualcomm)</h3>
+                <div class="control-row">
+                    <label>Force Clock On</label>
+                    <label class="switch"><input type="checkbox" id="adreno_force_clk" checked><span class="slider"></span></label>
+                </div>
+                <div class="control-row">
+                    <label>Force Bus On</label>
+                    <label class="switch"><input type="checkbox" id="adreno_force_bus" checked><span class="slider"></span></label>
+                </div>
+                <div class="control-row">
+                    <label>Force Rail On</label>
+                    <label class="switch"><input type="checkbox" id="adreno_force_rail" checked><span class="slider"></span></label>
+                </div>
+                <div class="control-row">
+                    <label>Idle Timer (ms)</label>
+                    <input type="number" id="adreno_idle_timer" value="50">
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== RAM TAB ==================== -->
+        <section class="tab-content" id="tab-ram">
+            <h2>RAM & Memory</h2>
+            <div class="info-grid" id="ram-info">
+                <div class="info-card accent"><span class="label">Total</span><span class="value" id="ram-total">-</span></div>
+                <div class="info-card teal"><span class="label">Available</span><span class="value" id="ram-avail">-</span></div>
+                <div class="info-card pink"><span class="label">ZRAM</span><span class="value" id="ram-zram">-</span></div>
+                <div class="info-card lime"><span class="label">Swap</span><span class="value" id="ram-swap">-</span></div>
+            </div>
+
+            <div class="control-group">
+                <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="6" y1="10" x2="6" y2="14"/><line x1="10" y1="10" x2="10" y2="14"/></svg> Virtual Memory</h3>
+                <div class="control-row">
+                    <label>Swappiness (0-200)</label>
+                    <input type="range" id="swappiness" min="0" max="200" value="100">
+                    <span class="range-val" id="swappiness-val">100</span>
+                </div>
+                <div class="control-row">
+                    <label>Dirty Ratio (%)</label>
+                    <input type="range" id="dirty_ratio" min="5" max="80" value="40">
+                    <span class="range-val" id="dirty_ratio-val">40</span>
+                </div>
+                <div class="control-row">
+                    <label>Dirty Background (%)</label>
+                    <input type="range" id="dirty_background_ratio" min="1" max="50" value="10">
+                    <span class="range-val" id="dirty_background_ratio-val">10</span>
+                </div>
+                <div class="control-row">
+                    <label>VFS Cache Pressure</label>
+                    <input type="range" id="vfs_cache_pressure" min="10" max="500" value="50">
+                    <span class="range-val" id="vfs_cache_pressure-val">50</span>
+                </div>
+                <div class="control-row">
+                    <label>Min Free KBytes</label>
+                    <input type="number" id="min_free_kbytes" value="12288">
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg> ZRAM</h3>
+                <div class="control-row">
+                    <label>ZRAM Size (0=auto)</label>
+                    <input type="number" id="zram_size" placeholder="Auto">
+                </div>
+                <div class="control-row">
+                    <label>Compression</label>
+                    <select id="zram_algorithm">
+                        <option value="lz4">LZ4 (Fast)</option>
+                        <option value="zstd">ZSTD (Best)</option>
+                        <option value="lz4hc">LZ4HC</option>
+                        <option value="lzo">LZO</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="6" y1="10" x2="6" y2="14"/><line x1="10" y1="10" x2="10" y2="14"/><line x1="14" y1="10" x2="14" y2="14"/><line x1="18" y1="10" x2="18" y2="14"/></svg> I/O Scheduler</h3>
+                <div class="control-row">
+                    <label>Scheduler</label>
+                    <select id="io_scheduler">
+                        <option value="bfq">BFQ</option>
+                        <option value="mq-deadline">MQ Deadline</option>
+                        <option value="none">None</option>
+                        <option value="cfq">CFQ</option>
+                        <option value="sio">SIO</option>
+                    </select>
+                </div>
+                <div class="control-row">
+                    <label>Readahead (KB)</label>
+                    <input type="number" id="readahead" value="2048">
+                </div>
+                <div class="control-row">
+                    <label>NR Requests</label>
+                    <input type="number" id="nr_requests" value="64">
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== KERNEL TAB ==================== -->
+        <section class="tab-content" id="tab-kernel">
+            <h2>Kernel Configuration</h2>
+            <div class="control-group">
+                <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2"/><path d="M12 21v2"/><path d="M4.22 4.22l1.42 1.42"/><path d="M18.36 18.36l1.42 1.42"/></svg> Scheduler</h3>
+                <div class="control-row"><label>Sched Autogroup</label><label class="switch"><input type="checkbox" id="sched_autogroup"><span class="slider"></span></label></div>
+                <div class="control-row"><label>Child Runs First</label><label class="switch"><input type="checkbox" id="sched_child_runs_first" checked><span class="slider"></span></label></div>
+                <div class="control-row"><label>Energy Aware Scheduling</label><label class="switch"><input type="checkbox" id="sched_energy_aware" checked><span class="slider"></span></label></div>
+            </div>
+            <div class="control-group">
+                <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Core</h3>
+                <div class="control-row"><label>Fsync</label><label class="switch"><input type="checkbox" id="fsync" checked><span class="slider"></span></label></div>
+                <div class="control-row"><label>BPF JIT</label><label class="switch"><input type="checkbox" id="bpf_jit" checked><span class="slider"></span></label></div>
+                <div class="control-row"><label>SysRq</label><label class="switch"><input type="checkbox" id="sysrq"><span class="slider"></span></label></div>
+                <div class="control-row"><label>Panic on OOPS</label><label class="switch"><input type="checkbox" id="panic_on_oops" checked><span class="slider"></span></label></div>
+            </div>
+            <div class="control-group">
+                <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Security</h3>
+                <div class="control-row"><label>Ptrace Scope</label><select id="ptrace_scope"><option value="0">0 — Unrestricted</option><option value="1">1 — Restricted</option><option value="2">2 — Admin only</option></select></div>
+                <div class="control-row"><label>Unprivileged UserNS</label><label class="switch"><input type="checkbox" id="unprivileged_userns" checked><span class="slider"></span></label></div>
+            </div>
+        </section>
+
+        <!-- ==================== NETWORK TAB ==================== -->
+        <section class="tab-content" id="tab-network">
+            <h2>Network Configuration</h2>
+            <div class="control-group">
+                <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg> TCP</h3>
+                <div class="control-row"><label>Congestion Control</label><select id="tcp_congestion"><option value="bbr">BBR</option><option value="bbr2">BBR2</option><option value="cubic">Cubic</option><option value="vegas">Vegas</option><option value="westwood">Westwood</option></select></div>
+                <div class="control-row"><label>Queue Discipline</label><select id="default_qdisc"><option value="fq">FQ</option><option value="fq_codel">FQ-CODEL</option><option value="cake">CAKE</option></select></div>
+                <div class="control-row"><label>TCP FastOpen</label><select id="tcp_fastopen"><option value="3">Client + Server</option><option value="2">Client only</option><option value="1">Server only</option><option value="0">Disabled</option></select></div>
+                <div class="control-row"><label>Slow Start After Idle</label><label class="switch"><input type="checkbox" id="tcp_slow_start"><span class="slider"></span></label></div>
+                <div class="control-row"><label>MTU Probing</label><label class="switch"><input type="checkbox" id="tcp_mtu_probe" checked><span class="slider"></span></label></div>
+            </div>
+            <div class="control-group">
+                <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg> Buffers</h3>
+                <div class="control-row"><label>Rmem Max</label><input type="number" id="tcp_rmem_max" value="16777216"></div>
+                <div class="control-row"><label>Wmem Max</label><input type="number" id="tcp_wmem_max" value="16777216"></div>
+                <div class="control-row"><label>Netdev Backlog</label><input type="number" id="netdev_backlog" value="4096"></div>
+                <div class="control-row"><label>Somaxconn</label><input type="number" id="somaxconn" value="4096"></div>
+            </div>
+        </section>
+
+        <!-- ==================== THERMAL TAB ==================== -->
+        <section class="tab-content" id="tab-thermal">
+            <h2>Thermal Management</h2>
+            <div class="info-grid" id="thermal-info">
+                <div class="info-card accent"><span class="label">Zones</span><span class="value" id="thermal-zones">-</span></div>
+                <div class="info-card teal"><span class="label">Current</span><span class="value" id="thermal-current">-</span></div>
+            </div>
+            <div class="control-group">
+                <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg> Policy</h3>
+                <div class="control-row"><label>Thermal Mode</label><select id="thermal_mode"><option value="performance">Performance</option><option value="balanced">Balanced</option><option value="cool">Cool</option></select></div>
+                <div class="control-row"><label>Headroom (mC)</label><input type="number" id="thermal_headroom" value="5000"></div>
+                <div class="control-row"><label>CPU Throttle (mC)</label><input type="number" id="cpu_throttle_temp" value="95000"></div>
+                <div class="control-row"><label>GPU Throttle (mC)</label><input type="number" id="gpu_throttle_temp" value="95000"></div>
+                <div class="control-row"><label>Polling (ms)</label><input type="number" id="thermal_polling" value="2000"></div>
+            </div>
+        </section>
+
+        <!-- ==================== OVERCLOCK TAB ==================== -->
+        <section class="tab-content" id="tab-overclock">
+            <h2>Overclock & Max Performance</h2>
+            <div class="warning-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                Overclocking may cause instability. Reboot to apply.
+            </div>
+            <div class="control-group">
+                <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/></svg> CPU</h3>
+                <div class="control-row"><label>CPU Overclock</label><label class="switch"><input type="checkbox" id="overclock_enabled" checked><span class="slider"></span></label></div>
+                <div class="control-row"><label>OC Min Freq (0=auto)</label><input type="number" id="cpu_oc_min" value="0"></div>
+            </div>
+            <div class="control-group">
+                <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4"/><path d="M14 12h4"/></svg> GPU</h3>
+                <div class="control-row"><label>GPU Overclock</label><label class="switch"><input type="checkbox" id="gpu_overclock_enabled" checked><span class="slider"></span></label></div>
+            </div>
+            <div class="control-group">
+                <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg> Bus / I/O</h3>
+                <div class="control-row"><label>Bus/DDR Overclock</label><label class="switch"><input type="checkbox" id="bus_overclock" checked><span class="slider"></span></label></div>
+                <div class="control-row"><label>I/O Overclock</label><label class="switch"><input type="checkbox" id="io_overclock" checked><span class="slider"></span></label></div>
+            </div>
+            <div class="control-group">
+                <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg> Global Boost</h3>
+                <div class="control-row"><label>Boost Freq (0=off)</label><input type="number" id="global_boost_freq" value="0"></div>
+                <div class="control-row"><label>Boost Duration (ms)</label><input type="number" id="global_boost_ms" value="50"></div>
+            </div>
+            <div class="btn-row">
+                <button class="btn btn-danger" onclick="applyOverclock()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                    Apply Max OC Now
+                </button>
+            </div>
+        </section>
+
+        <!-- ==================== OPENGL TAB ==================== -->
+        <section class="tab-content" id="tab-opengl">
+            <h2>OpenGL Renderer</h2>
+            <div class="info-grid" id="gl-info">
+                <div class="info-card accent"><span class="label">HWUI</span><span class="value" id="gl-hwui">-</span></div>
+                <div class="info-card teal"><span class="label">RenderEngine</span><span class="value" id="gl-renderengine">-</span></div>
+                <div class="info-card pink"><span class="label">MSAA</span><span class="value" id="gl-msaa">-</span></div>
+                <div class="info-card lime"><span class="label">Frame Pacing</span><span class="value" id="gl-framepacing">-</span></div>
+            </div>
+            <div class="control-group">
+                <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg> Renderer</h3>
+                <div class="control-row"><label>HWUI Renderer</label><select id="opengl_renderer"><option value="skiagl">Skia OpenGL</option><option value="skiavk">Skia Vulkan</option></select></div>
+                <div class="control-row"><label>RenderEngine</label><select id="renderengine_backend"><option value="skiagl">Skia OpenGL</option><option value="skiavk">Skia Vulkan</option></select></div>
+            </div>
+            <div class="control-group">
+                <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/></svg> HWUI Tuning</h3>
+                <div class="control-row"><label>CPU Time Budget (%)</label><input type="range" id="hwui_cpu_time" min="5" max="50" value="25"><span class="range-val" id="hwui_cpu_time-val">25</span></div>
+                <div class="control-row"><label>Texture Cache (MB)</label><input type="number" id="hwui_texture_cache" value="96"></div>
+                <div class="control-row"><label>Layer Cache (MB)</label><input type="number" id="hwui_layer_cache" value="48"></div>
+                <div class="control-row"><label>Frame Pacing</label><label class="switch"><input type="checkbox" id="hwui_frame_pacing" checked><span class="slider"></span></label></div>
+                <div class="control-row"><label>Multi-threaded Pipeline</label><label class="switch"><input type="checkbox" id="hwui_multi_thread" checked><span class="slider"></span></label></div>
+            </div>
+            <div class="control-group">
+                <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Animation</h3>
+                <div class="control-row"><label>Window Anim</label><select id="window_animation_scale"><option value="0.5">0.5x</option><option value="0.75">0.75x</option><option value="1.0">1.0x</option></select></div>
+                <div class="control-row"><label>Transition Anim</label><select id="transition_animation_scale"><option value="0.5">0.5x</option><option value="0.75">0.75x</option><option value="1.0">1.0x</option></select></div>
+                <div class="control-row"><label>Animator Duration</label><select id="animator_duration_scale"><option value="0.5">0.5x</option><option value="0.75">0.75x</option><option value="1.0">1.0x</option></select></div>
+            </div>
+        </section>
+
+        <!-- ==================== PROFILES TAB ==================== -->
+        <section class="tab-content" id="tab-profiles">
+            <h2>Profile Manager</h2>
+            <div class="info-grid">
+                <div class="info-card accent"><span class="label">Active</span><span class="value" id="active-profile-name">None</span></div>
+                <div class="info-card teal"><span class="label">Total</span><span class="value" id="total-profiles">0</span></div>
+            </div>
+            <div class="control-group">
+                <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save Profile</h3>
+                <div class="control-row"><label>Name</label><input type="text" id="new-profile-name" placeholder="my-profile" style="width:140px;max-width:140px;text-align:left;"></div>
+                <div class="btn-row"><button class="btn btn-success" onclick="saveProfile()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg> Save</button></div>
+            </div>
+            <div class="control-group">
+                <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> Saved Profiles</h3>
+                <div id="profile-list" class="profile-list"><div class="profile-empty">Loading...</div></div>
+            </div>
+            <div class="control-group">
+                <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Import / Export</h3>
+                <div class="control-row"><label>Export all to /sdcard/</label><button class="btn btn-sm btn-blue" onclick="exportProfile()">Export</button></div>
+                <div class="control-row"><label>Import from /sdcard/</label><button class="btn btn-sm btn-blue" onclick="importProfile()">Import</button></div>
+            </div>
+            <div class="control-group">
+                <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> Auto-Apply on Boot</h3>
+                <div class="control-row"><label>Profile</label><select id="auto-apply-select"><option value="none">None</option></select></div>
+                <div class="btn-row"><button class="btn btn-primary" onclick="setAutoApply()">Set Auto-Apply</button></div>
+            </div>
+            <div class="control-group">
+                <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Rename / Duplicate</h3>
+                <div class="control-row"><label>Source</label><select id="rename-source" class="profile-select"><option value="">Select...</option></select></div>
+                <div class="control-row"><label>New Name</label><input type="text" id="rename-new-name" placeholder="new-name" style="width:140px;max-width:140px;text-align:left;"></div>
+                <div class="btn-row">
+                    <button class="btn btn-sm btn-secondary" onclick="renameProfile()">Rename</button>
+                    <button class="btn btn-sm btn-secondary" onclick="duplicateProfile()">Duplicate</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== BENCHMARK TAB ==================== -->
+        <section class="tab-content" id="tab-benchmark">
+            <h2>Performance Benchmark</h2>
+
+            <div class="btn-row" style="margin-bottom:16px;">
+                <button class="btn btn-primary" onclick="runBenchmark('cpu')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/></svg> CPU</button>
+                <button class="btn btn-teal" style="background:var(--teal)" onclick="runBenchmark('ram')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/></svg> RAM</button>
+                <button class="btn btn-purple" onclick="runBenchmark('io')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/></svg> I/O</button>
+                <button class="btn btn-orange" onclick="runBenchmark('all')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> All</button>
+            </div>
+
+            <div id="bench-loading" style="display:none;" class="warning-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation:spin 1s linear infinite"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg>
+                Running benchmark, please wait...
+            </div>
+
+            <div id="bench-results" style="display:none;">
+                <div class="bench-grid" id="bench-cards"></div>
+            </div>
+
+            <div class="control-group">
+                <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> Before / After Comparison</h3>
+                <div class="control-row">
+                    <label>Step 1: Save BEFORE baseline</label>
+                    <button class="btn btn-sm btn-secondary" onclick="saveBenchmark('before')">Save Before</button>
+                </div>
+                <div class="control-row">
+                    <label>Step 2: Apply settings, then save AFTER</label>
+                    <button class="btn btn-sm btn-secondary" onclick="saveBenchmark('after')">Save After</button>
+                </div>
+                <div class="btn-row">
+                    <button class="btn btn-primary" onclick="compareBenchmarks()">Compare Before vs After</button>
+                </div>
+            </div>
+
+            <div id="compare-results" style="display:none;"></div>
+        </section>
+
+        <!-- ==================== GAME MODE TAB ==================== -->
+        <section class="tab-content" id="tab-game">
+            <h2>Game Mode</h2>
+
+            <div id="game-mode-status" class="warning-box" style="display:none;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                <span id="game-mode-status-text">Game Mode: OFF</span>
+            </div>
+
+            <div class="btn-row" style="margin-bottom:16px;">
+                <button class="btn btn-purple" onclick="gameDetect()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    Auto-Detect Game
+                </button>
+                <button class="btn btn-danger" onclick="gameOff()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                    Game Mode OFF
+                </button>
+            </div>
+
+            <!-- Quick Genre Buttons -->
+            <div class="control-group">
+                <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="11" x2="10" y2="11"/><line x1="8" y1="9" x2="8" y2="13"/><path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z"/></svg> Quick Genre Presets</h3>
+                <div class="game-genre-grid">
+                    <button class="game-genre-btn" onclick="applyGameGenre('battle_royale')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        Battle Royale
+                        <span>PUBG, Free Fire, COD</span>
+                    </button>
+                    <button class="game-genre-btn" onclick="applyGameGenre('moba')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        MOBA
+                        <span>MLBB, Wild Rift</span>
+                    </button>
+                    <button class="game-genre-btn" onclick="applyGameGenre('open_world')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                        Open World
+                        <span>Genshin, Wuthering</span>
+                    </button>
+                    <button class="game-genre-btn" onclick="applyGameGenre('fps')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                        FPS
+                        <span>COD Mobile, PUBG</span>
+                    </button>
+                    <button class="game-genre-btn" onclick="applyGameGenre('racing')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        Racing
+                        <span>Asphalt 9, NFS</span>
+                    </button>
+                    <button class="game-genre-btn" onclick="applyGameGenre('casual')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                        Casual
+                        <span>Roblox, Minecraft</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Game List by Genre -->
+            <div class="control-group">
+                <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> All Games</h3>
+                <div id="game-list" class="game-list">Loading games...</div>
+            </div>
+
+            <!-- Active Game Mode Settings Preview -->
+            <div class="control-group">
+                <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Active Preset Settings</h3>
+                <div class="game-settings-grid" id="game-settings">
+                    <div class="game-setting-item"><span class="k">CPU</span><span class="v" id="gs-cpu">-</span></div>
+                    <div class="game-setting-item"><span class="k">GPU</span><span class="v" id="gs-gpu">-</span></div>
+                    <div class="game-setting-item"><span class="k">RAM</span><span class="v" id="gs-ram">-</span></div>
+                    <div class="game-setting-item"><span class="k">Network</span><span class="v" id="gs-net">-</span></div>
+                    <div class="game-setting-item"><span class="k">Thermal</span><span class="v" id="gs-thermal">-</span></div>
+                    <div class="game-setting-item"><span class="k">Animation</span><span class="v" id="gs-anim">-</span></div>
+                    <div class="game-setting-item"><span class="k">Scheduler</span><span class="v" id="gs-sched">-</span></div>
+                    <div class="game-setting-item"><span class="k">I/O</span><span class="v" id="gs-io">-</span></div>
+                </div>
+            </div>
+
+            <!-- Manual Add Custom Game -->
+            <div class="control-group">
+                <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add Custom Game / App</h3>
+                <div class="control-row">
+                    <label>Package Name</label>
+                    <input type="text" id="custom-game-pkg" placeholder="com.example.game" style="width:180px;max-width:180px;text-align:left;font-size:11px;">
+                </div>
+                <div class="control-row">
+                    <label>Display Name</label>
+                    <input type="text" id="custom-game-name" placeholder="My Game" style="width:180px;max-width:180px;text-align:left;">
+                </div>
+                <div class="control-row">
+                    <label>Genre / Preset</label>
+                    <select id="custom-game-genre">
+                        <option value="battle_royale">Battle Royale</option>
+                        <option value="moba">MOBA</option>
+                        <option value="open_world">Open World</option>
+                        <option value="fps">FPS</option>
+                        <option value="racing">Racing</option>
+                        <option value="casual">Casual</option>
+                    </select>
+                </div>
+                <div class="btn-row">
+                    <button class="btn btn-success" onclick="addCustomGame()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add Game</button>
+                    <button class="btn btn-secondary" onclick="loadCustomGames()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> Refresh</button>
+                </div>
+                <div id="custom-games-list" class="game-list" style="margin-top:12px;"></div>
+            </div>
+
+            <!-- Scan Installed Apps -->
+            <div class="control-group">
+                <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Scan Installed Apps</h3>
+                <div class="control-row">
+                    <label>Filter (optional)</label>
+                    <input type="text" id="scan-filter" placeholder="e.g. tencent, miHoYo" style="width:160px;max-width:160px;text-align:left;font-size:11px;">
+                </div>
+                <div class="btn-row">
+                    <button class="btn btn-primary" onclick="scanApps()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Scan All Apps</button>
+                    <button class="btn btn-secondary" onclick="scanApps('game')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="11" x2="10" y2="11"/><line x1="8" y1="9" x2="8" y2="13"/><path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z"/></svg> Scan Games Only</button>
+                </div>
+                <div id="scan-loading" style="display:none;margin:12px 0;" class="warning-box">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation:spin 1s linear infinite"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg>
+                    Scanning installed apps...
+                </div>
+                <div class="scan-select-all" id="scan-select-all" style="display:none;">
+                    <label class="scan-checkbox-label">
+                        <input type="checkbox" id="scan-check-all" onchange="toggleScanAll()">
+                        <span>Select All</span>
+                    </label>
+                    <button class="btn btn-sm btn-purple" onclick="addScannedGames()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add Selected</button>
+                </div>
+                <div id="scan-results" class="game-list"></div>
+            </div>
+        </section>
+
+        <!-- ==================== AUTO-DETECT TAB ==================== -->
+        <section class="tab-content" id="tab-detect">
+            <h2>Hardware Detection & Auto-Optimize</h2>
+
+            <div class="btn-row" style="margin-bottom:16px;">
+                <button class="btn btn-primary" onclick="runDetect()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    Scan Hardware
+                </button>
+                <button class="btn btn-purple" onclick="applyAutoDetect()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    Apply Optimal Settings
+                </button>
+            </div>
+
+            <div id="detect-loading" style="display:none;" class="warning-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation:spin 1s linear infinite"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg>
+                Scanning hardware...
+            </div>
+
+            <div id="detect-results" style="display:none;"></div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <button class="btn btn-secondary" onclick="loadConfig()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Load
+        </button>
+        <button class="btn btn-primary" onclick="applyAll()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Apply All
+        </button>
+        <button class="btn btn-success" onclick="saveConfig()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+            Save
+        </button>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
