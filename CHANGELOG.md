@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [v3.2.7] - 2026-08-22
+
+### Added
+- **Quick Settings tile helper APK** — `ore-tile.apk` auto-built by CI and attached to release
+- Tile toggles WebUI server from notification shade via root
+- `helper-app/` source code with build script
+
+### Changed
+- CI now builds both flashable ZIP and tile APK on tag push
+- Flashable ZIP excludes `helper-app/` source files
+
+---
+
 ## [v3.2.6] - 2026-08-22
 
 ### Added
@@ -233,6 +246,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 | Version | Date | Changes |
 |---------|------|---------|
+| v3.2.7 | 2026-08-22 | Auto-build tile APK + CI improvements |
 | v3.2.6 | 2026-08-22 | WebUI server toggle + dashboard status |
 | v3.2.5 | 2026-08-22 | Universal WebUI server for all root managers |
 | v3.2.4 | 2026-08-22 | iOS-style UI redesign + Universal root manager support |
