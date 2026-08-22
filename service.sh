@@ -70,6 +70,10 @@ write_persistent_props
 log "service.sh: Starting Game Mode daemon..."
 "$MODDIR/scripts/gamemode_daemon.sh" start >/dev/null 2>&1 &
 
+# ---- Start WebUI Server (for non-KSU managers) ----
+log "service.sh: Starting WebUI server..."
+"$MODDIR/scripts/webui_server.sh" start >/dev/null 2>&1
+
 # ---- Check for Updates (silent) ----
 log "service.sh: Checking for updates..."
 local update_ver=$("$MODDIR/scripts/check_update.sh" auto 2>/dev/null)
@@ -82,4 +86,4 @@ log "service.sh: Final verification..."
 verify_props
 
 log "service.sh: All optimizations applied successfully"
-log "service.sh: WebUI available at http://localhost:port in KernelSU Manager"
+log "service.sh: WebUI: KernelSU Manager or http://127.0.0.1:8080"

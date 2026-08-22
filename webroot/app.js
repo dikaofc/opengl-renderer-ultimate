@@ -9,27 +9,35 @@ const CONF_FILE = `${CONF_DIR}/config.conf`;
 const MODDIR = '/data/adb/modules/opengl_renderer_ultimate';
 
 // ---- Shell Execution ----
-function shell(cmd) {
-    return new Promise((resolve) => {
-        if (typeof ksu !== 'undefined' && ksu.exec) {
+const API_URL = `${window.location.protocol}//${window.location.hostname}:8080`;
+let useApi = false;
+
+async function shell(cmd) {
+    // 1) KernelSU native exec (works inside KSU Manager WebUI)
+    if (typeof ksu !== 'undefined' && ksu.exec) {
+        return new Promise((resolve) => {
             ksu.exec(cmd, (result) => {
-                // KernelSU callback: result is a string (stdout) in most versions,
-                // but may be an object {stdout, stderr, code} in newer versions.
-                if (typeof result === 'string') {
-                    resolve(result);
-                } else if (result && typeof result.stdout === 'string') {
-                    resolve(result.stdout);
-                } else if (result !== undefined && result !== null) {
-                    resolve(String(result));
-                } else {
-                    resolve('');
-                }
+                if (typeof result === 'string') resolve(result);
+                else if (result && typeof result.stdout === 'string') resolve(result.stdout);
+                else if (result != null) resolve(String(result));
+                else resolve('');
             });
-        } else {
-            console.warn('[Shell] ksu.exec not available — running outside KernelSU?');
-            resolve('');
-        }
-    });
+        });
+    }
+
+    // 2) HTTP API fallback (Magisk / Kitsune / APatch / SukiSU / browser)
+    try {
+        const resp = await fetch(`${API_URL}/api/exec`, {
+            method: 'POST',
+            body: cmd,
+        });
+        const text = await resp.text();
+        useApi = true;
+        return text;
+    } catch (e) {
+        console.warn('[Shell] API unavailable:', e.message);
+        return '';
+    }
 }
 
 // ---- Tab Navigation ----
